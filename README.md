@@ -1,2 +1,2 @@
 # bsdgames
-bsdgames dist files for FreeBSD ports
+bsdgames sources, primarily for the FreeBSD port games/bsdgames
