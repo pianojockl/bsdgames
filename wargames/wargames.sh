@@ -32,9 +32,9 @@
 echo -n "Would you like to play a game? "
 read x
 
-if [ -f /usr/local/bin/$x ] ; then
+if [ -f /usr/games/$x ] ; then
 	tput cl
-	exec /usr/local/bin/$x
+	exec /usr/games/$x
 else
 	echo "Funny, the only way to win is not to play at all."
 fi

@@ -29,7 +29,7 @@
  *	@(#)pathnames.h	8.2 (Berkeley) 4/2/94
  */
 
-#define	_PATH_GAMEPROG	"/usr/local/bin/phantasia"
+#define	_PATH_GAMEPROG	"/usr/games/phantasia"
 #define	_PATH_GOLD	"/var/games/phantasia/gold"
 #define	_PATH_LASTDEAD	"/var/games/phantasia/lastdead"
 #define	_PATH_MESS	"/var/games/phantasia/mess"

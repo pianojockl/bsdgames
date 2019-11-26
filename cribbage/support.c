@@ -188,18 +188,6 @@ chkscr(int *scr, int inc)
 }
 
 /*
- * pegreset:
- *	re-initialize the cribbage board, and zero the scores
- */
-void
-pegreset(void)
-{
-	prpeg(0,' ',0);
-	prpeg(0,' ',1);
-	return;
-}
- 
-/*
  * prpeg:
  *	Put out the peg character on the score board and put the
  *	score up on the board.
