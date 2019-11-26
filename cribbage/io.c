@@ -45,11 +45,6 @@
 
 #define	LINESIZE		128
 
-#ifdef CTRL
-#undef CTRL
-#endif
-#define	CTRL(X)			(X - 'A' + 1)
-
 char    linebuf[LINESIZE];
 
 const char *const rankname[RANKS] = {
@@ -62,8 +57,6 @@ const char *const rankchar[RANKS] = {
 };
 
 const char *const suitname[SUITS] = {"SPADES", "HEARTS", "DIAMONDS", "CLUBS"};
-
-const char *const suitchar[SUITS] = {"S", "H", "D", "C"};
 
 static bool	incard(CARD *);
 static bool	msgcrd(CARD, bool, const char *, bool);
@@ -99,10 +92,7 @@ msgcrd(CARD c, bool brfrank, const char *mid, bool brfsuit)
 		addmsg("%s", rankname[c.rank]);
 	if (mid != NULL)
 		addmsg("%s", mid);
-	if (brfsuit)
-		addmsg("%1.1s", suitchar[c.suit]);
-	else
-		addmsg("%s", suitname[c.suit]);
+	addmsg(brfsuit?"1.1s":"%s", suitname[c.suit]);
 	return (true);
 }
 
@@ -133,9 +123,9 @@ prcard(WINDOW *win, int y, int x, CARD c, bool blank)
 	mvwaddstr(win, y + 4, x, "+-----+");
 	if (!blank) {
 		mvwaddch(win, y + 1, x + 1, rankchar[c.rank][0]);
-		waddch(win, suitchar[c.suit][0]);
+		waddch(win, suitname[c.suit][0]);
 		mvwaddch(win, y + 3, x + 4, rankchar[c.rank][0]);
-		waddch(win, suitchar[c.suit][0]);
+		waddch(win, suitname[c.suit][0]);
 	}
 }
 
@@ -245,7 +235,7 @@ incard(CARD *crd)
 		++p;		/* advance to next char */
 		sut = EMPTY;
 		for (i = 0; i < SUITS; i++) {
-			if (*p == *suitchar[i]) {
+			if (*p == *suitname[i]) {
 				sut = i;
 				break;
 			}
@@ -279,7 +269,7 @@ incard(CARD *crd)
 	}
 	sut = EMPTY;
 	for (i = 0; i < SUITS; i++) {
-		if (!strcmp(p, suitname[i]) || !strcmp(p, suitchar[i])) {
+		if ( !strncmp(p, suitname[i], 1) ) {
 			sut = i;
 			break;
 		}
@@ -323,13 +313,14 @@ number(int lo, int hi, const char *prompt)
 		msg("%s", prompt);
 		if (!(p = get_line()) || *p == '\0') {
 			msg(quiet ? "Not a number" :
-			    "That doesn't look like a number");
+                            "That doesn't look like an unsigned number, "
+                            "please try again");
 			continue;
 		}
 		sum = 0;
 
 		if (!isdigit(*p))
-			sum = lo - 1;
+			sum = -1;
 		else
 			while (isdigit(*p)) {
 				sum = 10 * sum + (*p - '0');
@@ -337,14 +328,17 @@ number(int lo, int hi, const char *prompt)
 			}
 
 		if (*p != ' ' && *p != '\t' && *p != '\0')
-			sum = lo - 1;
+			sum = -1;
 		if (sum >= lo && sum <= hi)
 			break;
-		if (sum == lo - 1)
-			msg("that doesn't look like a number, try again --> ");
+		if (sum == -1)
+			msg(quiet ? "Not an unsigned number" :
+			    "That doesn't look like an unsigned number, "
+			    "please try again");
 		else
-		msg("%d is not between %d and %d inclusive, try again --> ",
-			    sum, lo, hi);
+			msg(quiet ? "%d not in range %d-%d" : 
+			            "%d is not between %d and %d inclusive, "
+			            "please try again", sum, lo, hi);
 	}
 	return (sum);
 }
@@ -363,7 +357,7 @@ msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(&Msgbuf[Newpos], fmt, ap);
+	Newpos += vsprintf(&Msgbuf[Newpos], fmt, ap);
 	va_end(ap);
 	endmsg();
 }
@@ -378,7 +372,7 @@ addmsg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(&Msgbuf[Newpos], fmt, ap);
+	Newpos += vsprintf(&Msgbuf[Newpos], fmt, ap);
 	va_end(ap);
 }
 
@@ -393,7 +387,7 @@ endmsg(void)
 {
 	static int lastline = 0;
 	int len;
-	char *mp, *omp;
+	char *mp;
 
 	/* All messages should start with uppercase */
 	mvaddch(lastline + Y_MSG_START, SCORE_X, ' ');
@@ -411,24 +405,25 @@ endmsg(void)
 	mvaddch(Lineno + Y_MSG_START, SCORE_X, '*');
 	lastline = Lineno;
 	do {
-		mvwaddstr(Msgwin, Lineno, 0, mp);
+		char *mp1,*mp2 = mp;
+
 		if ((len = strlen(mp)) > MSG_X) {
-			omp = mp;
-			for (mp = &mp[MSG_X - 1]; *mp != ' '; mp--)
-				continue;
-			while (*mp == ' ')
-				mp--;
-			mp++;
-			wmove(Msgwin, Lineno, mp - omp);
-			wclrtoeol(Msgwin);
+			mp1 = &mp[MSG_X - 1]; 
+			while (*mp1 != ' ')
+				 mp1--;
+			mp2 = mp1 + 1;
+			while (*mp1 == ' ')
+				mp1--;
+			*++mp1 = '\0';
 		}
+		mvwaddstr(Msgwin, Lineno, 0, mp);
+		mp = mp2;
 		if (++Lineno >= MSG_Y)
 			Lineno = 0;
 	} while (len > MSG_X);
 	wclrtoeol(Msgwin);
 	Mpos = len;
 	Newpos = 0;
-	wrefresh(Msgwin);
 	refresh();
 	wrefresh(Msgwin);
 }
@@ -480,23 +475,35 @@ static int
 readchar(void)
 {
 	int cnt;
-	char c;
+	int c;
 
 over:
 	cnt = 0;
-	while (read(STDIN_FILENO, &c, sizeof(char)) <= 0)
-		if (cnt++ > 100) {	/* if we are getting infinite EOFs */
-			bye();		/* quit the game */
-			exit(1);
-		}
-	if (c == CTRL('L')) {
-		wrefresh(curscr);
-		goto over;
+	while ( (c=getch()) == ERR)
+		if (cnt++ > 100) 	/* if we are getting infinite errors (EOF ??) */
+			goto QUIT;
+	switch (c) {
+		case KEY_EXIT:
+		case KEY_CLOSE:
+		case '\3':  /* CTRL-C */
+		case '\4':  /* CTRL-D */
+			goto QUIT;
+		case KEY_REFRESH:
+		case '\f':
+			wrefresh(curscr);
+			goto over;
+		case KEY_ENTER:
+		case '\r':
+		case '\n':
+			c = '\n';
+			/* FALLTHROUGH */
+		default:
+			return(c);
 	}
-	if (c == '\r')
-		return ('\n');
-	else
-		return (c);
+	/* NOTREACHED */
+QUIT:
+	bye();		/* quit the game */
+	exit(0);
 }
 
 /*
@@ -508,48 +515,58 @@ char *
 get_line(void)
 {
 	char *sp;
-	int c, oy, ox;
-	WINDOW *oscr;
-
-	oscr = stdscr;
-	stdscr = Msgwin;
-	getyx(stdscr, oy, ox);
-	refresh();
+	int c;
+      
+	wrefresh(Msgwin);
 	/* loop reading in the string, and put it in a temporary buffer */
-	for (sp = linebuf; (c = readchar()) != '\n'; clrtoeol(), refresh()) {
-		if (c == -1)
-			continue;
-		else
-			if (c == erasechar()) {	/* process erase character */
-				if (sp > linebuf) {
-					int i;
+	for (sp = linebuf; (c = readchar()) != '\n'; wclrtoeol(Msgwin), wrefresh(Msgwin)) {
+		if (c == killchar())
+			c = KEY_CANCEL;
+		if (c == erasechar())
+			c = '\b';
+		switch (c) {
+			case KEY_CANCEL:
+			case KEY_DL:
+			case KEY_EOL:
+			case KEY_RESTART:
+				sp = linebuf;
+				wmove(Msgwin, Lineno, 0);
+				wclrtoeol(Msgwin);
+				break;
+			case KEY_UNDO:
+			case KEY_DC:  /* termcap 'delete character' key */
+			case '\177':  /* [DEL] key */
+			case   '\b':  /* [BS]  key */
+				if (sp == linebuf)
+					beep();
+				else {
+					int  y, x;
 
 					sp--;
-					for (i = strlen(unctrl(*sp)); i; i--)
-						addch('\b');
+					Mpos--;
+					getyx(Msgwin, y, x);
+					wmove(Msgwin, y, x - 1);
 				}
-				continue;
-			} else
-				if (c == killchar()) {	/* process kill
-							 * character */
-					sp = linebuf;
-					move(oy, ox);
+				break;
+			default:
+				if (c >= KEY_MIN)  /* unrecognized 'function' key */
+					beep();
+				else if (sp == linebuf && c == ' ')
 					continue;
-				} else
-					if (sp == linebuf && c == ' ')
-						continue;
-		if (sp >= &linebuf[LINESIZE - 1] || !(isprint(c) || c == ' '))
-			putchar(CTRL('G'));
-		else {
-			if (islower(c))
-				c = toupper(c);
-			*sp++ = c;
-			addstr(unctrl(c));
-			Mpos++;
+				else if (sp >= &linebuf[LINESIZE - 1] 
+				    || !(isprint(c) || c == ' '))
+					beep();
+				else {
+					if (islower(c))
+						c = toupper(c);
+					*sp++ = c;
+					waddstr(Msgwin,unctrl(c));
+					Mpos++;
+				}
+				break;
 		}
 	}
 	*sp = '\0';
-	stdscr = oscr;
 	return (linebuf);
 }
 

@@ -54,6 +54,7 @@ static bool	playhand(bool);
 static void	prcrib(bool, bool);
 static void	prtable(int);
 static bool	scoreh(bool);
+void		pegreset(void);
 
 int
 main(int argc, char *argv[])
@@ -202,12 +203,14 @@ game(void)
 		do {
 			if (!rflag) {			/* player cuts deck */
 				msg(quiet ? "Cut for crib? " :
-			    "Cut to see whose crib it is -- low card wins? ");
-				get_line();
+			                    "Cut to see whose crib it is -- "
+				            "low card wins");
+				i = number(4, CARDS - 4, quiet ? "Your cut? " :
+				                  "How many cards down do you "
+				                  "wish to cut the deck? ");
 			}
-			i = random() % CARDS;      /* random cut */
 			do {	/* comp cuts deck */
-				j = random() % CARDS;
+				j = 4 + random() % (CARDS - 8);
 			} while (j == i);
 			addmsg(quiet ? "You cut " : "You cut the ");
 			msgcard(deck[i], false);
@@ -232,6 +235,7 @@ game(void)
 		wrefresh(Tablewin);
 		werase(Compwin);
 		wrefresh(Compwin);
+		pegreset();
 		msg("Loser (%s) gets first crib", (iwon ? "you" : "me"));
 		compcrib = !iwon;
 	}
@@ -354,8 +358,9 @@ discard(bool mycrib)
 
 /*
  * cut:
- *	Cut the deck and set turnover.  Actually, we only ASK the
- *	player what card to turn.  We do a random one, anyway.
+ *	Cut the deck and set turnover. 
+ * 'According to Hoyle', one must cut at least 4 cards into the deck, and 
+ * must leave at least 4 cards on the table. this cut follows Hoyle's rules.
  */
 static bool
 cut(bool mycrib, int pos)
@@ -364,31 +369,24 @@ cut(bool mycrib, int pos)
 	bool win;
 
 	win = false;
-	if (mycrib) {
-		if (!rflag) {	/* random cut */
-			msg(quiet ? "Cut the deck? " :
-		    "How many cards down do you wish to cut the deck? ");
-			get_line();
-		}
-		i = random() % (CARDS - pos);
-		turnover = deck[i + pos];
-		addmsg(quiet ? "You cut " : "You cut the ");
-		msgcard(turnover, false);
+	if (mycrib && !rflag) 
+		i = number(4, CARDS - pos - 4, quiet ? "Your cut? " :
+		                                 "How many cards down do "
+		                                 "you wish to cut the deck? ");
+	else
+		i = 4 + random() % (CARDS - pos - 8 );
+
+	turnover = deck[pos + i];
+	addmsg(!mycrib ? "I cut " : "You cut ");
+	if (!quiet)
+		addmsg("the ");
+	msgcard(turnover, false);
+	endmsg();
+	if (turnover.rank == JACK) {
+		addmsg(mycrib ? "I " : "You ");
+		addmsg("get two for his heels");
 		endmsg();
-		if (turnover.rank == JACK) {
-			msg("I get two for his heels");
-			win = chkscr(&cscore, 2);
-		}
-	} else {
-		i = random() % (CARDS - pos) + pos;
-		turnover = deck[i];
-		addmsg(quiet ? "I cut " : "I cut the ");
-		msgcard(turnover, false);
-		endmsg();
-		if (turnover.rank == JACK) {
-			msg("You get two for his heels");
-			win = chkscr(&pscore, 2);
-		}
+		win = chkscr(mycrib ? &cscore : &pscore, 2);
 	}
 	makeknown(&turnover, 1);
 	prcrib(mycrib, false);
@@ -469,6 +467,7 @@ peg(bool mycrib)
 					sum = 0;
 					mego = ugo = false;
 					Tcnt = 0;
+					do_wait();
 				}
 			} else {
 				played = true;
@@ -516,6 +515,7 @@ peg(bool mycrib)
 					sum = 0;
 					mego = ugo = false;
 					Tcnt = 0;
+					do_wait();
 				}
 			} else {			/* player plays */
 				played = false;
@@ -562,18 +562,14 @@ peg(bool mycrib)
 	prhand(ch, cnum, Compwin, true);
 	prtable(sum);
 	if (last) {
-		if (played) {
-			msg(quiet ? "I get one for last" :
-			    "I get one point for last");
-			do_wait();
-			if (chkscr(&cscore, 1))
-				return (true);
-		} else {
-			msg(quiet ? "You get one for last" :
-			    "You get one point for last");
-			if (chkscr(&pscore, 1))
-				return (true);
-		}
+		addmsg(played ? "I get one " :"You get one ");
+		if (!quiet)
+			addmsg("point ");
+		addmsg("for last");
+		endmsg();
+		do_wait();
+		if (chkscr(played ? &cscore : &pscore, 1))
+			return (true);
 	}
 	return (false);
 }
