@@ -5,35 +5,25 @@ SUBDIR= adventure \
 	arithmetic \
 	atc \
 	backgammon \
-	banner \
 	battlestar \
 	bcd \
 	bs \
 	boggle \
-	caesar \
 	canfield \
 	cribbage \
 	colorbars \
-	factor \
 	fish \
-	fortune \
-	grdc \
 	hack \
 	hals_end \
 	hangman \
 	hunt \
 	larn \
 	mille \
-	morse \
-	number \
 	phantasia \
 	pig \
-	pom \
 	ppt \
-	primes \
 	quiz \
 	rain \
-	random \
 	robots \
 	rogue \
 	sail \

@@ -32,6 +32,6 @@
 
 #define	_PATH_LOG		"/var/games/larn/llog12.0"
 #define	_PATH_SCORE		"/var/games/larn/lscore12.0"
-#define	_PATH_HELP		"/usr/share/games/larn/larn.help"
-#define	_PATH_LEVELS		"/usr/share/games/larn/larnmaze"
+#define	_PATH_HELP		"/usr/local/share/games/larn/larn.help"
+#define	_PATH_LEVELS		"/usr/local/share/games/larn/larnmaze"
 #define	_PATH_PLAYERIDS		"/var/games/larn/playerids"

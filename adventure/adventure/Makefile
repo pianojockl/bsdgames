@@ -9,6 +9,6 @@ MAN=	adventure.6
 CLEANFILES=data.c
 
 data.c: glorkz setup.c
-	${.OBJDIR}/../setup/setup.nx ${.CURDIR}/../glorkz > data.c
+	${.OBJDIR}/../setup/setup ${.CURDIR}/../glorkz > data.c
 
 .include <bsd.prog.mk>

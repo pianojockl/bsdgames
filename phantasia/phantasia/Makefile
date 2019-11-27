@@ -21,7 +21,7 @@ FILESDIR=	/var/games/phantasia
 
 .ORDER: monsters ${DATAFILES}
 monsters ${DATAFILES}: monsters.asc setup.c
-	${.OBJDIR}/../setup/setup.nx -m ${.CURDIR}/../monsters.asc
+	${.OBJDIR}/../setup/setup -m ${.CURDIR}/../monsters.asc
 
 beforeinstall:
 .for file in ${DATAFILES}

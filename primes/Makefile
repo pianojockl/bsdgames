@@ -3,7 +3,7 @@
 
 PROG=	primes
 SRCS=	pattern.c pr_tbl.c primes.c
-NOMAN=	noman
+MK_MAN= no
 DPADD=	${LIBM}
 LDADD=	-lm
 

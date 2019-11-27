@@ -30,7 +30,7 @@ FILESDIR=	/var/games/hackdir
 CLEANFILES=	hack.onames.h
 
 hack.onames.h: def.objects.h makedefs.c
-	${.OBJDIR}/../makedefs/makedefs.nx ${.CURDIR}/../def.objects.h > hack.onames.h
+	${.OBJDIR}/../makedefs/makedefs ${.CURDIR}/../def.objects.h > hack.onames.h
 
 beforeinstall:
 	${INSTALL} -o ${BINOWN} -g ${BINGRP} -m ${NOBINMODE} /dev/null \

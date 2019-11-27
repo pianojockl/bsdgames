@@ -4,10 +4,11 @@
 
 PROG=	mkdict
 CFLAGS+=-I${.CURDIR}/../boggle
+MK_MAN= no
 
 build-tools: mkdict.nx
 
 # this mkdict is used in place, it is not installed anywhere
 install:
 
-.include <bsd.hostprog.mk>
+.include <bsd.prog.mk>

@@ -13,9 +13,9 @@ FILESDIR=	${SHAREDIR}/games/boggle
 CLEANFILES=	dictindex dictionary
 
 dictionary:
-	${.OBJDIR}/../mkdict/mkdict.nx < ${BOOGLEWORDS} > ${.TARGET}
+	${.OBJDIR}/../mkdict/mkdict < ${BOOGLEWORDS} > ${.TARGET}
 
 dictindex: dictionary
-	${.OBJDIR}/../mkindex/mkindex.nx < ${.ALLSRC} > ${.TARGET}
+	${.OBJDIR}/../mkindex/mkindex < ${.ALLSRC} > ${.TARGET}
 
 .include <bsd.prog.mk>
