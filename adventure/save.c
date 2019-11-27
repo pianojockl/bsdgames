@@ -41,10 +41,12 @@
 #include <sys/types.h>
 #include "hdr.h"
 
-struct savestruct {
-	void *address;
-	int width;
-};
+/*
+* struct savestruct {
+* 	void *address;
+* 	int width;
+* };
+*/
 
 struct savestruct save_array[] =
 {

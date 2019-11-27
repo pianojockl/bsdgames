@@ -56,7 +56,7 @@
 
 static void draw_line(WINDOW *, int, int, int, int, const char *);
 
-WINDOW *radar, *cleanradar, *credit, *input, *planes;
+static WINDOW *radar, *cleanradar, *credit, *input, *planes;
 
 int
 getAChar(void)

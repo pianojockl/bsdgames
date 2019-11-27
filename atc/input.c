@@ -116,7 +116,7 @@ static const char	*mark(int);
 static const char	*unmark(int);
 static const char	*ignore(int);
 
-RULE	state0[] = {	{ ALPHATOKEN,	1,	"%c:",		setplane},
+static RULE	state0[] = {	{ ALPHATOKEN,	1,	"%c:",		setplane},
 			{ RETTOKEN,	-1,	"",		NULL	},
 			{ HELPTOKEN,	12,	" [a-z]<ret>",	NULL	}},
 	state1[] = {	{ 't',		2,	" turn",	turn	},
@@ -182,7 +182,7 @@ RULE	state0[] = {	{ ALPHATOKEN,	1,	"%c:",		setplane},
 
 #define DEF_STATE(s)	{ NUMELS(s),	(s)	}
 
-STATE	st[] = {
+static STATE	st[] = {
 	DEF_STATE(state0), DEF_STATE(state1), DEF_STATE(state2),
 	DEF_STATE(state3), DEF_STATE(state4), DEF_STATE(state5),
 	DEF_STATE(state6), DEF_STATE(state7), DEF_STATE(state8),
@@ -190,11 +190,11 @@ STATE	st[] = {
 	DEF_STATE(state12)
 };
 
-PLANE	p;
-STACK	stack[MAXDEPTH];
-int	level;
-int	tval;
-int	dest_type, dest_no, dir;
+static PLANE	p;
+static STACK	stack[MAXDEPTH];
+static int	level;
+static int	tval;
+static int	dest_type, dest_no, dir;
 
 static int
 pop(void)

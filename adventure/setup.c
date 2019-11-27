@@ -75,6 +75,7 @@ main(int argc, char **argv)
 	puts(SIG1);
 	puts(SIG2);
 	puts(" */");
+	printf("\n#include \"data.h\"");
 	printf("\n\nchar data_file[] =\n{");
 	srandom(SEED);
 	count = 0;

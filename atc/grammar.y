@@ -62,6 +62,17 @@
 
 extern int	yylex(void);
 
+
+extern int     errors;
+extern int     line;
+extern int      yydebug;
+extern int      yynerrs;
+extern int      yyerrflag;
+extern int      yychar;
+extern YYSTYPE  yyval;
+extern YYSTYPE  yylval;
+
+
 static void	check_edge(int, int);
 static void	check_point(int, int);
 static void	check_linepoint(int, int);

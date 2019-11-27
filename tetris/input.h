@@ -36,7 +36,11 @@
  */
 
 /* Operations on timespecs. */
+#ifndef timespecclear
 #define	timespecclear(tsp)	(tsp)->tv_sec = (time_t)((tsp)->tv_nsec = 0L)
+#endif
+
+#ifndef timespecsub
 #define	timespecsub(tsp, usp, vsp)					\
 	do {								\
 		(vsp)->tv_sec = (tsp)->tv_sec - (usp)->tv_sec;		\
@@ -46,6 +50,7 @@
 			(vsp)->tv_nsec += 1000000000L;			\
 		}							\
 	} while (/* CONSTCOND */ 0)
+#endif
 
 int rwait(struct timespec *);
 int tgetchar(void);

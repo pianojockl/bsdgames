@@ -8,6 +8,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "hals_end.h"
 
 int speed;
 int emotion;

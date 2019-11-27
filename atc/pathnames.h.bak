@@ -1,12 +1,6 @@
-/*	$OpenBSD: screen.h,v 1.5 2003/06/03 03:01:41 millert Exp $	*/
-/*	$NetBSD: screen.h,v 1.2 1995/04/22 07:42:42 cgd Exp $	*/
-
 /*-
- * Copyright (c) 1992, 1993
+ * Copyright (c) 1990, 1993
  *	The Regents of the University of California.  All rights reserved.
- *
- * This code is derived from software contributed to Berkeley by
- * Chris Torek and Darren F. Provine.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,31 +26,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)screen.h	8.1 (Berkeley) 5/31/93
+ *	@(#)pathnames.h	8.1 (Berkeley) 5/31/93
  */
 
-/*
- * Capabilities from TERMCAP (used in the score code).
- */
-extern char *SEstr;		/* end standout mode */
-extern char *SOstr;		/* begin standout mode */
+#include <paths.h>
 
-/*
- * putpad() is for padded strings with count=1.
- */
-#define	putpad(s)	tputs(s, 1, put)
-
-int put(int);			/* just calls putchar; for tputs */
-void scr_clear(void);
-void scr_end(void);
-void scr_init(void);
-void scr_msg(char *, int);
-void scr_set(void);
-void scr_update(void);
-
-struct tcsinfo {                /* termcap string info; some abbrevs above */
-        char tcname[3];
-        char **tcaddr;
-};
-
-extern struct tcsinfo tcstrings[];
+#define	_PATH_GAMES	"/usr/share/games/atc/"
+#define	_PATH_SCORE	"/var/games/atc_score"

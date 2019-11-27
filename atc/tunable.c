@@ -49,4 +49,5 @@
  * 4 lines are printed above the score, one below + your prompt, so
  * to prevent scrolling: 6 + NUM_SCORES <= 24 (lines on an average terminal).
  */
+extern int NUM_SCORES;
 int	NUM_SCORES =		18;

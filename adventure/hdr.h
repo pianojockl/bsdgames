@@ -56,8 +56,10 @@
 #include <sys/types.h>
 #include <signal.h>
 
-int datfd;			/* message file descriptor */
+extern int datfd;			/* message file descriptor */
+extern volatile sig_atomic_t delhit;
 volatile sig_atomic_t delhit;
+extern int yea;
 int yea;
 extern char data_file[];	/* Virtual data file */
 
@@ -66,10 +68,16 @@ extern char data_file[];	/* Virtual data file */
 #define FLUSHLINE do { int flushline_ch; while ((flushline_ch = getchar()) != EOF && flushline_ch != '\n'); } while (0)
 #define FLUSHLF   while (next()!=LF)
 
+extern int loc, newloc, oldloc, oldlc2, wzdark, gaveup, kq, k, k2;
+extern char *wd1, *wd2;		/* the complete words */
+extern int verb, obj, spk;
+extern int blklin;
+extern int saved, savet, mxscor, latncy;
+
 int loc, newloc, oldloc, oldlc2, wzdark, gaveup, kq, k, k2;
 char *wd1, *wd2;		/* the complete words */
 int verb, obj, spk;
-extern int blklin;
+int blklin;
 int saved, savet, mxscor, latncy;
 
 #define SHORT 50		/* How short is a demo game? */
@@ -80,7 +88,10 @@ int saved, savet, mxscor, latncy;
 struct hashtab {		/* hash table for vocabulary */
 	int val;		/* word type &index (ktab) */
 	char *atab;		/* pointer to actual string */
-} voc[HTSIZE];
+};
+
+extern struct hashtab voc[HTSIZE];
+struct hashtab voc[HTSIZE];
 
 #define SEED 1815622		/* "Encryption" seed */
 
@@ -90,19 +101,30 @@ struct text {
 };
 
 #define RTXSIZ 205
+extern struct text rtext[RTXSIZ];	/* random text messages */
 struct text rtext[RTXSIZ];	/* random text messages */
 
 #define MAGSIZ 35
+extern struct text mtext[MAGSIZ];	/* magic messages */
 struct text mtext[MAGSIZ];	/* magic messages */
 
+extern int clsses;
 int clsses;
 #define CLSMAX  12
+extern struct text ctext[CLSMAX];	/* classes of adventurer */
+extern int cval[CLSMAX];
+
+extern struct text ptext[101];		/* object descriptions */
+
 struct text ctext[CLSMAX];	/* classes of adventurer */
 int cval[CLSMAX];
 
 struct text ptext[101];		/* object descriptions */
 
 #define LOCSIZ 141		/* number of locations */
+extern struct text ltext[LOCSIZ];	/* long loc description */
+extern struct text stext[LOCSIZ];	/* short loc descriptions */
+
 struct text ltext[LOCSIZ];	/* long loc description */
 struct text stext[LOCSIZ];	/* short loc descriptions */
 
@@ -111,30 +133,58 @@ struct travlist {		/* direcs & conditions of travel */
 	int conditions;		/* m in writeup (newloc / 1000) */
 	int tloc;		/* n in writeup (newloc % 1000) */
 	int tverb;		/* the verb that takes you there */
-} *travel[LOCSIZ], *tkk;	/* travel is closer to keys(...) */
+};
+extern struct travlist *travel[LOCSIZ], *tkk;	/* travel is closer to keys(...) */
+
+struct travlist *travel[LOCSIZ], *tkk;	/* travel is closer to keys(...) */
+
+extern int atloc[LOCSIZ];
 
 int atloc[LOCSIZ];
 
-int plac[101];			/* initial object placement */
-int fixd[101], fixed[101];	/* location fixed? */
+extern int plac[101];			/* initial object placement */
+extern int fixd[101], fixed[101];	/* location fixed? */
 
-int actspk[35];			/* rtext msg for verb <n> */
+extern int actspk[35];			/* rtext msg for verb <n> */
 
-int cond[LOCSIZ];		/* various condition bits */
+extern int cond[LOCSIZ];		/* various condition bits */
 
 extern int setbit[16];		/* bit defn masks 1,2,4,... */
+
+int atloc[LOCSIZ];
+int plac[101];			/* initial object placement */
+int fixd[101], fixed[101];	/* location fixed? */
+int actspk[35];			/* rtext msg for verb <n> */
+int cond[LOCSIZ];		/* various condition bits */
+int setbit[16];		/* bit defn masks 1,2,4,... */
+
+extern int hntmax;
+extern int hints[20][5];		/* info on hints */
+extern int hinted[20], hintlc[20];
 
 int hntmax;
 int hints[20][5];		/* info on hints */
 int hinted[20], hintlc[20];
 
+extern int place[101], prop[101], linkx[201];
+extern int abb[LOCSIZ];
+
 int place[101], prop[101], linkx[201];
 int abb[LOCSIZ];
 
+extern int maxtrs, tally, tally2;	/* treasure values */
 int maxtrs, tally, tally2;	/* treasure values */
 
 #define FALSE   0
 #define TRUE    1
+
+extern int axe, back, batter, bear, bird, bottle,	/* mnemonics */
+    cage, cave, chain, chasm, chest, clam, coins, door, dprssn, dragon,
+    dwarf, eggs, emrald, enter, entrnc, find, fissur, food, grate, invent,
+    keys, knife, lamp, lock, look, magzin, messag, mirror, nugget, null,
+    oil, oyster, pearl, pillow, plant, plant2, pour, pyram, rod, rod2,
+    rug, say, snake, spices, steps, stream, tablet, throw, tridnt, troll,
+    troll2, vase, vend, water;
 
 int axe, back, batter, bear, bird, bottle,	/* mnemonics */
     cage, cave, chain, chasm, chest, clam, coins, door, dprssn, dragon,
@@ -144,19 +194,30 @@ int axe, back, batter, bear, bird, bottle,	/* mnemonics */
     rug, say, snake, spices, steps, stream, tablet, throw, tridnt, troll,
     troll2, vase, vend, water;
 
+extern int chloc, chloc2, daltlc, dflag, dloc[7],	/* dwarf stuff */
+    dseen[7], odloc[7];
+
 int chloc, chloc2, daltlc, dflag, dloc[7],	/* dwarf stuff */
     dseen[7], odloc[7];
 
+extern int attack, dtotal, stick, tk[21];
+
 int attack, dtotal, stick, tk[21];
+
+extern int abbnum, bonus, clock1, clock2, closed,	/* various flags and counters */
+    closng, detail, dkill, foobar, holdng, iwest, knfloc,
+    lmwarn, maxdie, numdie, panic, scorng, turns;
 
 int abbnum, bonus, clock1, clock2, closed,	/* various flags and counters */
     closng, detail, dkill, foobar, holdng, iwest, knfloc,
     lmwarn, maxdie, numdie, panic, scorng, turns;
 
+extern int demo, limit;
+
 int demo, limit;
 
-int at(int objj);
-int bug(int n) __dead2;
+extern int at(int objj);
+extern int bug(int n) __dead2;
 void carry(int, int);
 void caveclose(void);
 void checkhints(void);
@@ -212,4 +273,35 @@ int yesm(int x, int y, int z);
 /* We need to get a little tricky to avoid strings */
 #define DECR(a,b,c,d,e) decr(#a,#b,#c,#d,#e)
 
-gid_t	egid;
+extern gid_t	egid;
+
+struct savestruct {
+        void *address;
+        int width;
+};
+
+extern struct savestruct save_array[];
+
+extern char magic[6];
+
+extern char *inptr;				/* Pointer into virtual disk */
+extern int outsw;				/* putting stuff to data file? */
+extern const char iotape[];
+extern const char *tape;		/* pointer to encryption tape */
+extern char breakch;				/* tell which char ended rnum */
+extern char nbf[12];
+extern char *seekhere;
+
+char *inptr;				/* Pointer into virtual disk */
+int outsw;				/* putting stuff to data file? */
+const char *tape;		/* pointer to encryption tape */
+char breakch;				/* tell which char ended rnum */
+char nbf[12];
+char *seekhere;
+
+extern const unsigned long crctab[];
+extern unsigned long crcval;
+extern unsigned int step;
+
+unsigned long crcval;
+unsigned int step;
