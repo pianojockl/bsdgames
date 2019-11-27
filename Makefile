@@ -35,6 +35,9 @@ SUBDIR= adventure \
 	worms \
 	wump
 
+# Included, but not to be compiled:
+# banner, caesar, factor, fortune, grdc, morse, number, pom, primes, random
+
 # maximum parallelism
 #
 SUBDIR_ORDERED=
