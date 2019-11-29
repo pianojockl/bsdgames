@@ -37,8 +37,20 @@
 
 ## CONTRIBUTORS ##
 
+* bring AUTHORS up to date
+
 ## See about other games that might compile ##
 
-## Look into man pages ##
+* dab
+* gomoku
+* monop
+
+## dab ##
+* enable arrow keys in addition to vi commands in `human.cc`
+
+## monop ##
+* check about license?
+
+## Look into man pages... ##
 
 ## Write a bsdgames man page ##
