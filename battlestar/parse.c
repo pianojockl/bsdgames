@@ -40,64 +40,64 @@ static struct wlist *lookup(const char *);
 void
 wordinit(void)
 {
-	struct wlist *w;
+    struct wlist *w;
 
-	for (w = wlist; w->string; w++)
-		install(w);
+    for (w = wlist; w->string; w++)
+        install(w);
 }
 
 static int
 hash(const char *s)
 {
-	int hashval;
+    int hashval;
 
-	hashval = 0;
-	while (*s) {
-		hashval += *s++;
-		hashval *= HASHMUL;
-		hashval &= HASHMASK;
-	}
-	return hashval;
+    hashval = 0;
+    while (*s) {
+        hashval += *s++;
+        hashval *= HASHMUL;
+        hashval &= HASHMASK;
+    }
+    return hashval;
 }
 
 static struct wlist *
 lookup(const char *s)
 {
-	struct wlist *wp;
+    struct wlist *wp;
 
-	for (wp = hashtab[hash(s)]; wp != NULL; wp = wp->next)
-		if (*s == *wp->string && strcmp(s, wp->string) == 0)
-			return wp;
-	return NULL;
+    for (wp = hashtab[hash(s)]; wp != NULL; wp = wp->next)
+        if (*s == *wp->string && strcmp(s, wp->string) == 0)
+            return wp;
+    return NULL;
 }
 
 static void
 install(struct wlist *wp)
 {
-	int hashval;
+    int hashval;
 
-	if (lookup(wp->string) == NULL) {
-		hashval = hash(wp->string);
-		wp->next = hashtab[hashval];
-		hashtab[hashval] = wp;
-	} else
-		printf("Multiply defined %s.\n", wp->string);
+    if (lookup(wp->string) == NULL) {
+        hashval = hash(wp->string);
+        wp->next = hashtab[hashval];
+        hashtab[hashval] = wp;
+    } else
+        printf("Multiply defined %s.\n", wp->string);
 }
 
 void
 parse(void)
 {
-	struct wlist *wp;
-	int n;
+    struct wlist *wp;
+    int n;
 
-	wordnumber = 0;		/* for cypher */
-	for (n = 0; n <= wordcount; n++) {
-		if ((wp = lookup(words[n])) == NULL) {
-			wordvalue[n] = -1;
-			wordtype[n] = -1;
-		} else {
-			wordvalue[n] = wp->value;
-			wordtype[n] = wp->article;
-		}
-	}
+    wordnumber = 0;		/* for cypher */
+    for (n = 0; n <= wordcount; n++) {
+        if ((wp = lookup(words[n])) == NULL) {
+            wordvalue[n] = -1;
+            wordtype[n] = -1;
+        } else {
+            wordvalue[n] = wp->value;
+            wordtype[n] = wp->article;
+        }
+    }
 }

@@ -38,134 +38,134 @@
 void
 restore(void)
 {
-	char *home;
-	char home1[MAXPATHLEN];
-	int n;
-	int tmp;
-	FILE *fp;
+    char *home;
+    char home1[MAXPATHLEN];
+    int n;
+    int tmp;
+    FILE *fp;
 
-	if ((home = getenv("HOME")) != NULL)
-		sprintf(home1, "%.*s/Bstar", MAXPATHLEN - 7, home);
-	else
-		return;
+    if ((home = getenv("HOME")) != NULL)
+        sprintf(home1, "%.*s/Bstar", MAXPATHLEN - 7, home);
+    else
+        return;
 
-	if ((fp = fopen(home1, "r")) == NULL) {
-		perror(home1);
-		return;
-	}
-	fread(&WEIGHT, sizeof WEIGHT, 1, fp);
-	fread(&CUMBER, sizeof CUMBER, 1, fp);
-	fread(&gclock, sizeof gclock, 1, fp);
-	fread(&tmp, sizeof tmp, 1, fp);
-	location = tmp ? dayfile : nightfile;
-	for (n = 1; n <= NUMOFROOMS; n++) {
-		fread(location[n].link, sizeof location[n].link, 1, fp);
-		fread(location[n].objects, sizeof location[n].objects, 1, fp);
-	}
-	fread(inven, sizeof inven, 1, fp);
-	fread(wear, sizeof wear, 1, fp);
-	fread(injuries, sizeof injuries, 1, fp);
-	fread(notes, sizeof notes, 1, fp);
-	fread(&direction, sizeof direction, 1, fp);
-	fread(&position, sizeof position, 1, fp);
-	fread(&gtime, sizeof gtime, 1, fp);
-	fread(&fuel, sizeof fuel, 1, fp);
-	fread(&torps, sizeof torps, 1, fp);
-	fread(&carrying, sizeof carrying, 1, fp);
-	fread(&encumber, sizeof encumber, 1, fp);
-	fread(&rythmn, sizeof rythmn, 1, fp);
-	fread(&followfight, sizeof followfight, 1, fp);
-	fread(&ate, sizeof ate, 1, fp);
-	fread(&snooze, sizeof snooze, 1, fp);
-	fread(&meetgirl, sizeof meetgirl, 1, fp);
-	fread(&followgod, sizeof followgod, 1, fp);
-	fread(&godready, sizeof godready, 1, fp);
-	fread(&bs_win, sizeof bs_win, 1, fp);
-	fread(&wintime, sizeof wintime, 1, fp);
-	fread(&matchlight, sizeof matchlight, 1, fp);
-	fread(&matchcount, sizeof matchcount, 1, fp);
-	fread(&loved, sizeof loved, 1, fp);
-	fread(&pleasure, sizeof pleasure, 1, fp);
-	fread(&power, sizeof power, 1, fp);
-	/* We must check the last read, to catch truncated save files. */
-	if (fread(&ego, sizeof ego, 1, fp) < 1)
-		errx(1, "save file %s too short", home1);
-	fclose(fp);
+    if ((fp = fopen(home1, "r")) == NULL) {
+        perror(home1);
+        return;
+    }
+    fread(&WEIGHT, sizeof WEIGHT, 1, fp);
+    fread(&CUMBER, sizeof CUMBER, 1, fp);
+    fread(&gclock, sizeof gclock, 1, fp);
+    fread(&tmp, sizeof tmp, 1, fp);
+    location = tmp ? dayfile : nightfile;
+    for (n = 1; n <= NUMOFROOMS; n++) {
+        fread(location[n].link, sizeof location[n].link, 1, fp);
+        fread(location[n].objects, sizeof location[n].objects, 1, fp);
+    }
+    fread(inven, sizeof inven, 1, fp);
+    fread(wear, sizeof wear, 1, fp);
+    fread(injuries, sizeof injuries, 1, fp);
+    fread(notes, sizeof notes, 1, fp);
+    fread(&direction, sizeof direction, 1, fp);
+    fread(&position, sizeof position, 1, fp);
+    fread(&gtime, sizeof gtime, 1, fp);
+    fread(&fuel, sizeof fuel, 1, fp);
+    fread(&torps, sizeof torps, 1, fp);
+    fread(&carrying, sizeof carrying, 1, fp);
+    fread(&encumber, sizeof encumber, 1, fp);
+    fread(&rythmn, sizeof rythmn, 1, fp);
+    fread(&followfight, sizeof followfight, 1, fp);
+    fread(&ate, sizeof ate, 1, fp);
+    fread(&snooze, sizeof snooze, 1, fp);
+    fread(&meetgirl, sizeof meetgirl, 1, fp);
+    fread(&followgod, sizeof followgod, 1, fp);
+    fread(&godready, sizeof godready, 1, fp);
+    fread(&bs_win, sizeof bs_win, 1, fp);
+    fread(&wintime, sizeof wintime, 1, fp);
+    fread(&matchlight, sizeof matchlight, 1, fp);
+    fread(&matchcount, sizeof matchcount, 1, fp);
+    fread(&loved, sizeof loved, 1, fp);
+    fread(&pleasure, sizeof pleasure, 1, fp);
+    fread(&power, sizeof power, 1, fp);
+    /* We must check the last read, to catch truncated save files. */
+    if (fread(&ego, sizeof ego, 1, fp) < 1)
+        errx(1, "save file %s too short", home1);
+    fclose(fp);
 }
 
 void
 save(void)
 {
-	struct stat sbuf;
-	char *home;
-	char home1[MAXPATHLEN];
-	int n;
-	int tmp, fd;
-	FILE *fp;
+    struct stat sbuf;
+    char *home;
+    char home1[MAXPATHLEN];
+    int n;
+    int tmp, fd;
+    FILE *fp;
 
-	home = getenv("HOME");
-	if (home == NULL)
-		return;
-	sprintf(home1, "%.*s/Bstar", MAXPATHLEN - 7, home);
+    home = getenv("HOME");
+    if (home == NULL)
+        return;
+    sprintf(home1, "%.*s/Bstar", MAXPATHLEN - 7, home);
 
-	/* Try to open the file safely. */
-	if (stat(home1, &sbuf) < 0) {
-		fd = open(home1, O_WRONLY|O_CREAT|O_EXCL, 0600);
-	        if (fd < 0) {
-          		fprintf(stderr, "Can't create %s\n", home1);
-           		return;
-	        }
-	} else {
-		if ((sbuf.st_mode & S_IFLNK) == S_IFLNK) {
-			fprintf(stderr, "No symlinks!\n");
-			return;
-		}
+    /* Try to open the file safely. */
+    if (stat(home1, &sbuf) < 0) {
+        fd = open(home1, O_WRONLY|O_CREAT|O_EXCL, 0600);
+        if (fd < 0) {
+            fprintf(stderr, "Can't create %s\n", home1);
+            return;
+        }
+    } else {
+        if ((sbuf.st_mode & S_IFLNK) == S_IFLNK) {
+            fprintf(stderr, "No symlinks!\n");
+            return;
+        }
 
-		fd = open(home1, O_WRONLY|O_EXCL);
-		if (fd < 0) {
-			fprintf(stderr, "Can't open %s for writing\n", home1);
-			return;
-		}
-	}
+        fd = open(home1, O_WRONLY|O_EXCL);
+        if (fd < 0) {
+            fprintf(stderr, "Can't open %s for writing\n", home1);
+            return;
+        }
+    }
 
-	if ((fp = fdopen(fd, "w")) == NULL) {
-		perror(home1);
-		return;
-	}
-	printf("Saved in %s.\n", home1);
-	fwrite(&WEIGHT, sizeof WEIGHT, 1, fp);
-	fwrite(&CUMBER, sizeof CUMBER, 1, fp);
-	fwrite(&gclock, sizeof gclock, 1, fp);
-	tmp = location == dayfile;
-	fwrite(&tmp, sizeof tmp, 1, fp);
-	for (n = 1; n <= NUMOFROOMS; n++) {
-		fwrite(location[n].link, sizeof location[n].link, 1, fp);
-		fwrite(location[n].objects, sizeof location[n].objects, 1, fp);
-	}
-	fwrite(inven, sizeof inven, 1, fp);
-	fwrite(wear, sizeof wear, 1, fp);
-	fwrite(injuries, sizeof injuries, 1, fp);
-	fwrite(notes, sizeof notes, 1, fp);
-	fwrite(&direction, sizeof direction, 1, fp);
-	fwrite(&position, sizeof position, 1, fp);
-	fwrite(&gtime, sizeof gtime, 1, fp);
-	fwrite(&fuel, sizeof fuel, 1, fp);
-	fwrite(&torps, sizeof torps, 1, fp);
-	fwrite(&carrying, sizeof carrying, 1, fp);
-	fwrite(&encumber, sizeof encumber, 1, fp);
-	fwrite(&rythmn, sizeof rythmn, 1, fp);
-	fwrite(&followfight, sizeof followfight, 1, fp);
-	fwrite(&ate, sizeof ate, 1, fp);
-	fwrite(&snooze, sizeof snooze, 1, fp);
-	fwrite(&meetgirl, sizeof meetgirl, 1, fp);
-	fwrite(&followgod, sizeof followgod, 1, fp);
-	fwrite(&godready, sizeof godready, 1, fp);
-	fwrite(&bs_win, sizeof bs_win, 1, fp);
-	fwrite(&wintime, sizeof wintime, 1, fp);
-	fwrite(&matchlight, sizeof matchlight, 1, fp);
-	fwrite(&matchcount, sizeof matchcount, 1, fp);
-	fwrite(&loved, sizeof loved, 1, fp);
-	fwrite(&pleasure, sizeof pleasure, 1, fp);
-	fwrite(&power, sizeof power, 1, fp);
-	fwrite(&ego, sizeof ego, 1, fp);
+    if ((fp = fdopen(fd, "w")) == NULL) {
+        perror(home1);
+        return;
+    }
+    printf("Saved in %s.\n", home1);
+    fwrite(&WEIGHT, sizeof WEIGHT, 1, fp);
+    fwrite(&CUMBER, sizeof CUMBER, 1, fp);
+    fwrite(&gclock, sizeof gclock, 1, fp);
+    tmp = location == dayfile;
+    fwrite(&tmp, sizeof tmp, 1, fp);
+    for (n = 1; n <= NUMOFROOMS; n++) {
+        fwrite(location[n].link, sizeof location[n].link, 1, fp);
+        fwrite(location[n].objects, sizeof location[n].objects, 1, fp);
+    }
+    fwrite(inven, sizeof inven, 1, fp);
+    fwrite(wear, sizeof wear, 1, fp);
+    fwrite(injuries, sizeof injuries, 1, fp);
+    fwrite(notes, sizeof notes, 1, fp);
+    fwrite(&direction, sizeof direction, 1, fp);
+    fwrite(&position, sizeof position, 1, fp);
+    fwrite(&gtime, sizeof gtime, 1, fp);
+    fwrite(&fuel, sizeof fuel, 1, fp);
+    fwrite(&torps, sizeof torps, 1, fp);
+    fwrite(&carrying, sizeof carrying, 1, fp);
+    fwrite(&encumber, sizeof encumber, 1, fp);
+    fwrite(&rythmn, sizeof rythmn, 1, fp);
+    fwrite(&followfight, sizeof followfight, 1, fp);
+    fwrite(&ate, sizeof ate, 1, fp);
+    fwrite(&snooze, sizeof snooze, 1, fp);
+    fwrite(&meetgirl, sizeof meetgirl, 1, fp);
+    fwrite(&followgod, sizeof followgod, 1, fp);
+    fwrite(&godready, sizeof godready, 1, fp);
+    fwrite(&bs_win, sizeof bs_win, 1, fp);
+    fwrite(&wintime, sizeof wintime, 1, fp);
+    fwrite(&matchlight, sizeof matchlight, 1, fp);
+    fwrite(&matchcount, sizeof matchcount, 1, fp);
+    fwrite(&loved, sizeof loved, 1, fp);
+    fwrite(&pleasure, sizeof pleasure, 1, fp);
+    fwrite(&power, sizeof power, 1, fp);
+    fwrite(&ego, sizeof ego, 1, fp);
 }

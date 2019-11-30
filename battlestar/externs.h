@@ -53,13 +53,13 @@
 #define setbit(array, index)	(array[index/BITS] |= (1 << (index % BITS)))
 #define clearbit(array, index)	(array[index/BITS] &= ~(1 << (index % BITS)))
 
-	/* well known rooms */
+/* well known rooms */
 #define FINAL	275
 #define GARDEN	197
 #define POOLS	126
 #define DOCK	93
 
-	/* word types */
+/* word types */
 #define VERB	0
 #define OBJECT  1
 #define NOUNS	2
@@ -67,7 +67,7 @@
 #define ADJS	4
 #define CONJ	5
 
-	/* words numbers */
+/* words numbers */
 #define KNIFE		0
 #define SWORD		1
 #define LAND		2
@@ -132,7 +132,7 @@
 #define BAR		62
 #define	BLOCK		63
 #define NUMOFOBJECTS	64
-	/* non-objects below */
+/* non-objects below */
 #define UP	1000
 #define DOWN	1001
 #define AHEAD	1002
@@ -187,7 +187,7 @@
 #define JUMP	1051
 #define KICK	1052
 
-	/* injuries */
+/* injuries */
 #define ARM	6		/* broken arm */
 #define RIBS	7		/* broken ribs */
 #define SPINE	9		/* broken back */
@@ -196,7 +196,7 @@
 #define NECK	12		/* broken NECK */
 #define NUMOFINJURIES 13
 
-	/* notes */
+/* notes */
 #define	CANTLAUNCH	0
 #define LAUNCHED	1
 #define CANTSEE		2
@@ -205,7 +205,7 @@
 #define DUG		5
 #define NUMOFNOTES	6
 
-	/* fundamental constants */
+/* fundamental constants */
 #define NUMOFROOMS	275
 #define NUMOFWORDS	((NUMOFOBJECTS + BITS - 1) / BITS)
 #define LINELENGTH	81
@@ -214,15 +214,15 @@
 #define TONIGHT		1
 #define CYCLE		100
 
-	/* initial variable values */
+/* initial variable values */
 #define TANKFULL	250
 #define TORPEDOES	10
 #define MAXWEIGHT	60
 #define MAXCUMBER	10
 
 struct room {
-	const char *name;
-	int link[8];
+    const char *name;
+    int link[8];
 #define north	link[0]
 #define south	link[1]
 #define east	link[2]
@@ -231,28 +231,28 @@ struct room {
 #define access	link[5]
 #define down	link[6]
 #define flyhere	link[7]
-	const char *desc;
-	unsigned int objects[NUMOFWORDS];
+    const char *desc;
+    unsigned int objects[NUMOFWORDS];
 };
 extern struct room dayfile[];
 extern struct room nightfile[];
 extern struct room *location;
 
-	/* object characteristics */
+/* object characteristics */
 extern const char *const objdes[NUMOFOBJECTS];
 extern const char *const objsht[NUMOFOBJECTS];
 extern const char *const ouch[NUMOFINJURIES];
 extern const int objwt[NUMOFOBJECTS];
 extern const int objcumber[NUMOFOBJECTS];
 
-	/* current input line */
+/* current input line */
 #define NWORD	20			/* words per line */
 extern char words[NWORD][15];
 extern int wordvalue[NWORD];
 extern int wordtype[NWORD];
 extern int wordcount, wordnumber;
 
-	/* state of the game */
+/* state of the game */
 extern int gclock;
 extern int gtime;
 extern int position;
@@ -286,9 +286,9 @@ extern char injuries[NUMOFINJURIES];
 extern char uname[MAXLOGNAME];
 
 struct wlist {
-	const char *string;
-	int value, article;
-	struct wlist *next;
+    const char *string;
+    int value, article;
+    struct wlist *next;
 };
 #define HASHSIZE	256
 #define HASHMUL		81
@@ -297,8 +297,8 @@ extern struct wlist *hashtab[HASHSIZE];
 extern struct wlist wlist[];
 
 struct objs {
-	short room;
-	short obj;
+    short room;
+    short obj;
 };
 extern const struct objs dayobjs[];
 extern const struct objs nightobjs[];

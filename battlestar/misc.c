@@ -36,25 +36,25 @@
 int
 card(const char *array, int size)	/* for beenthere, injuries */
 {
-	const char *end;
-	int i;
+    const char *end;
+    int i;
 
-	i = 0;
-	end = array + size;
-	while (array < end)
-		if (*array++)
-			i++;
-	return (i);
+    i = 0;
+    end = array + size;
+    while (array < end)
+        if (*array++)
+            i++;
+    return (i);
 }
 
 int
 ucard(const unsigned int *array)
 {
-	int j, n;
+    int j, n;
 
-	j = 0;
-	for (n = 0; n < NUMOFOBJECTS; n++)
-		if (testbit(array, n))
-			j++;
-	return (j);
+    j = 0;
+    for (n = 0; n < NUMOFOBJECTS; n++)
+        if (testbit(array, n))
+            j++;
+    return (j);
 }

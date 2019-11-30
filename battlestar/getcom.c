@@ -37,20 +37,20 @@
 char *
 getcom(char *buf, int size, const char *prompt, const char *error)
 {
-	for (;;) {
-		fputs(prompt, stdout);
-		if (fgets(buf, size, stdin) == 0) {
-			clearerr(stdin);
-			continue;
-		}
-		while (isspace(*buf))
-			buf++;
-		if (*buf)
-			break;
-		if (error)
-			puts(error);
-	}
-	return (buf);
+    for (;;) {
+        fputs(prompt, stdout);
+        if (fgets(buf, size, stdin) == 0) {
+            clearerr(stdin);
+            continue;
+        }
+        while (isspace(*buf))
+            buf++;
+        if (*buf)
+            break;
+        if (error)
+            puts(error);
+    }
+    return (buf);
 }
 
 
@@ -61,31 +61,31 @@ getcom(char *buf, int size, const char *prompt, const char *error)
 char *
 getword(char *buf1, char *buf2, int flag)
 {
-	while (isspace(*buf1))
-		buf1++;
-	if (*buf1 != ',') {
-		if (!*buf1) {
-			*buf2 = 0;
-			return (0);
-		}
-		while (*buf1 && !isspace(*buf1) && *buf1 != ',')
-			if (flag < 0) {
-				if (isupper(*buf1))
-					*buf2++ = tolower(*buf1++);
-				else
-					*buf2++ = *buf1++;
-			} else if (flag > 0) {
-				if (islower(*buf1))
-					*buf2++ = toupper(*buf1++);
-				else
-					*buf2++ = *buf1++;
-			} else {
-				*buf2++ = *buf1++;
-			}
-	} else
-		*buf2++ = *buf1++;
-	*buf2 = 0;
-	while (isspace(*buf1))
-		buf1++;
-	return (*buf1 ? buf1 : NULL);
+    while (isspace(*buf1))
+        buf1++;
+    if (*buf1 != ',') {
+        if (!*buf1) {
+            *buf2 = 0;
+            return (0);
+        }
+        while (*buf1 && !isspace(*buf1) && *buf1 != ',')
+            if (flag < 0) {
+                if (isupper(*buf1))
+                    *buf2++ = tolower(*buf1++);
+                else
+                    *buf2++ = *buf1++;
+            } else if (flag > 0) {
+                if (islower(*buf1))
+                    *buf2++ = toupper(*buf1++);
+                else
+                    *buf2++ = *buf1++;
+            } else {
+                *buf2++ = *buf1++;
+            }
+    } else
+        *buf2++ = *buf1++;
+    *buf2 = 0;
+    while (isspace(*buf1))
+        buf1++;
+    return (*buf1 ? buf1 : NULL);
 }

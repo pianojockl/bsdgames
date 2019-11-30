@@ -41,91 +41,91 @@ static int wizard(const char *);
 void
 initialize(int startup)
 {
-	const struct objs *p;
+    const struct objs *p;
 
-	puts("Version 4.2, fall 1984.");
-	puts("First Adventure game written by His Lordship, the honorable");
-	puts("Admiral D.W. Riggle\n");
-	srandomdev();
-	getutmp(uname);
-	if (startup)
-		location = dayfile;
-	wiz = wizard(uname);
-	wordinit();
-	if (startup) {
-		direction = NORTH;
-		gtime = 0;
-		snooze = CYCLE * 1.5;
-		position = 22;
-		setbit(wear, PAJAMAS);
-		fuel = TANKFULL;
-		torps = TORPEDOES;
-		for (p = dayobjs; p->room != 0; p++)
-			setbit(location[p->room].objects, p->obj);
-	} else
-		restore();
-	signal(SIGINT, die);
+    puts("Version 4.2, fall 1984.");
+    puts("First Adventure game written by His Lordship, the honorable");
+    puts("Admiral D.W. Riggle\n");
+    srandomdev();
+    getutmp(uname);
+    if (startup)
+        location = dayfile;
+    wiz = wizard(uname);
+    wordinit();
+    if (startup) {
+        direction = NORTH;
+        gtime = 0;
+        snooze = CYCLE * 1.5;
+        position = 22;
+        setbit(wear, PAJAMAS);
+        fuel = TANKFULL;
+        torps = TORPEDOES;
+        for (p = dayobjs; p->room != 0; p++)
+            setbit(location[p->room].objects, p->obj);
+    } else
+        restore();
+    signal(SIGINT, die);
 }
 
 static void
 getutmp(char *battlestar_uname)
 {
-	struct passwd *ptr;
+    struct passwd *ptr;
 
-	ptr = getpwuid(getuid());
-	strcpy(battlestar_uname, ptr ? ptr->pw_name : "");
+    ptr = getpwuid(getuid());
+    strcpy(battlestar_uname, ptr ? ptr->pw_name : "");
 }
 
 const char *const list[] = {	/* hereditary wizards */
-	"riggle",
-	"chris",
-	"edward",
-	"comay",
-	"yee",
-	"dmr",
-	"ken",
-	0
+    "riggle",
+    "chris",
+    "edward",
+    "comay",
+    "yee",
+    "dmr",
+    "ken",
+    0
 };
 
 const char *const badguys[] = {
-	"wnj",
-	"root",
-	"ted",
-	0
+    "wnj",
+    "root",
+    "ted",
+    0
 };
 
 static int
 wizard(const char *battlestar_uname)
 {
-	char flag;
+    char flag;
 
-	if ((flag = checkout(battlestar_uname)) > 0)
-		printf("You are the Great wizard %s.\n", battlestar_uname);
-	return flag;
+    if ((flag = checkout(battlestar_uname)) > 0)
+        printf("You are the Great wizard %s.\n", battlestar_uname);
+    return flag;
 }
 
 static int
 checkout(const char *battlestar_uname)
 {
-	const char *const *ptr;
+    const char *const *ptr;
 
-	for (ptr = list; *ptr; ptr++)
-		if (strcmp(*ptr, battlestar_uname) == 0)
-			return 1;
-	for (ptr = badguys; *ptr; ptr++)
-		if (strcmp(*ptr, battlestar_uname) == 0) {
-			printf("You are the Poor anti-wizard %s.  Good Luck!\n",
-				battlestar_uname);
-			if (location != NULL) {
-				CUMBER = 3;
-				WEIGHT = 9;     /* that'll get him! */
-				gclock = 10;
-				setbit(location[7].objects, WOODSMAN);  /* viper room */
-				setbit(location[20].objects, WOODSMAN); /* laser " */
-				setbit(location[13].objects, DARK);     /* amulet " */
-				setbit(location[8].objects, ELF);       /* closet */
-			}
-			return 0;	/* anything else, Chris? */
-		}
-	return 0;
+    for (ptr = list; *ptr; ptr++)
+        if (strcmp(*ptr, battlestar_uname) == 0)
+            return 1;
+    for (ptr = badguys; *ptr; ptr++)
+        if (strcmp(*ptr, battlestar_uname) == 0) {
+            printf("You are the Poor anti-wizard %s.  Good Luck!\n",
+                   battlestar_uname);
+            if (location != NULL) {
+                CUMBER = 3;
+                WEIGHT = 9;     /* that'll get him! */
+                gclock = 10;
+                setbit(location[7].objects, WOODSMAN);  /* viper room */
+                setbit(location[20].objects, WOODSMAN); /* laser " */
+                setbit(location[13].objects, DARK);     /* amulet " */
+                setbit(location[8].objects, ELF);       /* closet */
+            }
+            return 0;	/* anything else, Chris? */
+        }
+    return 0;
 }
