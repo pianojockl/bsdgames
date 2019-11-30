@@ -163,7 +163,7 @@ table(struct ship *from, struct ship *on, int rig, int shot, int hittable, int r
 		errx(1, "Unknown shot type %d", shot);
 
 	}
-	makesignal(from, message, on);
+	makesignal(from, "%s", on, message);
 	if (roll == 6 && rig) {
 		switch(Rhit) {
 		case 0:
@@ -190,7 +190,7 @@ table(struct ship *from, struct ship *on, int rig, int shot, int hittable, int r
 		default:
 			errx(1, "Bad Rhit = %d", Rhit);
 		}
-		makemsg(on, message);
+		makemsg(on, "%s", message);
 	} else if (roll == 6) {
 		switch (Hhit) {
 		case 0:
@@ -218,7 +218,7 @@ table(struct ship *from, struct ship *on, int rig, int shot, int hittable, int r
 		default:
 			errx(1, "Bad Hhit = %d", Hhit);
 		}
-		makemsg(on, message);
+		makemsg(on, "%s", message);
 	}
 	/*
 	if (Chit > 1 && on->file->readyL&R_INITIAL && on->file->readyR&R_INITIAL) {

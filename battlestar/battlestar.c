@@ -40,6 +40,7 @@
  */
 
 #include "externs.h"
+#include "externs.c"
 
 int
 main(int argc, char **argv)

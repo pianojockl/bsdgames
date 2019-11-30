@@ -30,6 +30,7 @@
  */
 
 #include <sys/cdefs.h>
+#include "externs.h"
 #ifndef lint
 #if 0
 static char sccsid[] = "@(#)version.c	8.1 (Berkeley) 5/31/93";

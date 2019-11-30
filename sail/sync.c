@@ -119,13 +119,13 @@ makemsg(struct ship *from, const char *fmt, ...)
 }
 
 int
-sync_exists(int game)
+sync_exists(int gameint)
 {
 	char buf[sizeof sync_file];
 	struct stat s;
 	time_t t;
 
-	sprintf(buf, SF, game);
+	sprintf(buf, SF, gameint);
 	time(&t);
 	setegid(egid);
 	if (stat(buf, &s) < 0) {
@@ -134,7 +134,7 @@ sync_exists(int game)
 	}
 	if (s.st_mtime < t - 60*60*2) {		/* 2 hours */
 		unlink(buf);
-		sprintf(buf, LF, game);
+		sprintf(buf, LF, gameint);
 		unlink(buf);
 		setegid(gid);
 		return 0;

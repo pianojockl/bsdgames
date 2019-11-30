@@ -103,7 +103,7 @@ typedef struct {
 }
 ship_t;
 
-ship_t plyship[SHIPTYPES] =
+static ship_t plyship[SHIPTYPES] =
 {
     { carrier,	0, 'A', 5, 0, 0, E, FALSE},
     { battle,	0, 'B', 4, 0, 0, E, FALSE},
@@ -112,7 +112,7 @@ ship_t plyship[SHIPTYPES] =
     { ptboat,	0, 'P', 2, 0, 0, E, FALSE},
 };
 
-ship_t cpuship[SHIPTYPES] =
+static ship_t cpuship[SHIPTYPES] =
 {
     { carrier,	0, 'A', 5, 0, 0, E, FALSE},
     { battle,	0, 'B', 4, 0, 0, E, FALSE},

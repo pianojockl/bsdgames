@@ -59,12 +59,9 @@
 #include <termios.h>
 
 #include "pathnames.h"
+#include "snake.h"
 
 #define cashvalue	chunk*(loot-penalty)/25
-
-struct point {
-	int col, line;
-};
 
 #define	same(s1, s2)	((s1)->line == (s2)->line && (s1)->col == (s2)->col)
 

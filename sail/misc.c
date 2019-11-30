@@ -108,27 +108,27 @@ closestenemy(struct ship *from, int side, int anyship)
 }
 
 static int
-angle(int dr, int dc)
+angle(int drint, int dcint)
 {
 	int i;
 
-	if (dc >= 0 && dr > 0)
+	if (dcint >= 0 && drint > 0)
 		i = 0;
-	else if (dr <= 0 && dc > 0)
+	else if (drint <= 0 && dcint > 0)
 		i = 2;
-	else if (dc <= 0 && dr < 0)
+	else if (dcint <= 0 && drint < 0)
 		i = 4;
 	else
 		i = 6;
-	dr = abs(dr);
-	dc = abs(dc);
-	if ((i == 0 || i == 4) && dc * 2.4 > dr) {
+	drint = abs(drint);
+	dcint = abs(dcint);
+	if ((i == 0 || i == 4) && dcint * 2.4 > drint) {
 		i++;
-		if (dc > dr * 2.4)
+		if (dcint > drint * 2.4)
 			i++;
-	} else if ((i == 2 || i == 6) && dr * 2.4 > dc) {
+	} else if ((i == 2 || i == 6) && drint * 2.4 > dcint) {
 		i++;
-		if (dr > dc * 2.4)
+		if (drint > dcint * 2.4)
 			i++;
 	}
 	return i % 8 + 1;

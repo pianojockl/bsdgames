@@ -61,7 +61,7 @@ lo_main(void)
 {
 	FILE *fp;
 	char sbuf[32];
-	int n = 0, people;
+	int n = 0;
 	struct passwd *pass;
 	struct logs log;
 	struct ship *ship;

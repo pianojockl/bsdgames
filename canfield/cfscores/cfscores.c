@@ -39,6 +39,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "pathnames.h"
+#include "cfscores.h"
+
 
 struct betinfo {
 	long	hand;		/* cost of dealing hand */

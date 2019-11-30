@@ -40,16 +40,9 @@
 #include <string.h>
 #include <unistd.h>
 #include "pathnames.h"
+#include "snscore.h"
 
 const char *recfile = _PATH_RAWSCORES;
-#define MAXPLAYERS 256
-
-struct	player	{
-	short	uids;
-	short	scores;
-	char	*name;
-};
-
 struct player players[MAXPLAYERS], temp;
 
 int

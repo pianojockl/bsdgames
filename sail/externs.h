@@ -411,3 +411,6 @@ void sync_close(char);
 void Write(int, struct ship *, int, int, int, int);
 void Writestr(int, struct ship *, const char *);
 int Sync(void);
+
+/* version.c */
+extern char version[];

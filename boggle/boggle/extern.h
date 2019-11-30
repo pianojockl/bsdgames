@@ -54,6 +54,18 @@ extern char **mword, **pword;
 extern int nmwords, npwords;
 extern int tnmwords, tnpwords;
 
+extern int npwords, maxpwords, maxpspace;
+extern int nmwords, maxmwords, maxmspace;
+extern char **pword, *pwords, *pwordsp;
+extern char **mword, *mwords, *mwordsp;
+extern int batch;
+extern int challenge;
+extern int debug;
+extern int minlength;
+extern int reuse;
+extern int selfuse;
+
+
 void addword(char *);
 void badword(void);
 char *batchword(FILE *);
@@ -90,3 +102,10 @@ void stoptime(void);
 int timerch(void);
 __dead2 void usage(void);
 int validword(char *);
+
+
+extern int PROMPT_COL, PROMPT_LINE;
+extern int BOARD_COL, BOARD_LINE;
+extern int SCORE_COL, SCORE_LINE;
+extern int ncols, nlines, lastline;
+

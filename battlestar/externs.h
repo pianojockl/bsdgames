@@ -236,7 +236,7 @@ struct room {
 };
 extern struct room dayfile[];
 extern struct room nightfile[];
-struct room *location;
+extern struct room *location;
 
 	/* object characteristics */
 extern const char *const objdes[NUMOFOBJECTS];
@@ -247,43 +247,43 @@ extern const int objcumber[NUMOFOBJECTS];
 
 	/* current input line */
 #define NWORD	20			/* words per line */
-char words[NWORD][15];
-int wordvalue[NWORD];
-int wordtype[NWORD];
-int wordcount, wordnumber;
+extern char words[NWORD][15];
+extern int wordvalue[NWORD];
+extern int wordtype[NWORD];
+extern int wordcount, wordnumber;
 
 	/* state of the game */
 extern int gclock;
-int gtime;
-int position;
-int direction;
-int left, right, ahead, back;
-int fuel, torps;
-int carrying, encumber;
-int rythmn;
+extern int gtime;
+extern int position;
+extern int direction;
+extern int left, right, ahead, back;
+extern int fuel, torps;
+extern int carrying, encumber;
+extern int rythmn;
 extern int followfight;
-int ate;
-int snooze;
-int meetgirl;
+extern int ate;
+extern int snooze;
+extern int meetgirl;
 extern int followgod;
-int godready;
+extern int godready;
 extern int bs_win;
-int wintime;
-int wiz;
-int tempwiz;
-int matchlight;
+extern int wintime;
+extern int wiz;
+extern int tempwiz;
+extern int matchlight;
 extern int matchcount;
-int loved;
-int pleasure, power, ego;
+extern int loved;
+extern int pleasure, power, ego;
 extern int WEIGHT;
 extern int CUMBER;
-int notes[NUMOFNOTES];
-unsigned int inven[NUMOFWORDS];
-u_int wear[NUMOFWORDS];
-char beenthere[NUMOFROOMS+1];
-char injuries[NUMOFINJURIES];
+extern int notes[NUMOFNOTES];
+extern unsigned int inven[NUMOFWORDS];
+extern u_int wear[NUMOFWORDS];
+extern char beenthere[NUMOFROOMS+1];
+extern char injuries[NUMOFINJURIES];
 
-char uname[MAXLOGNAME];
+extern char uname[MAXLOGNAME];
 
 struct wlist {
 	const char *string;
@@ -293,7 +293,7 @@ struct wlist {
 #define HASHSIZE	256
 #define HASHMUL		81
 #define HASHMASK	(HASHSIZE - 1)
-struct wlist *hashtab[HASHSIZE];
+extern struct wlist *hashtab[HASHSIZE];
 extern struct wlist wlist[];
 
 struct objs {
@@ -305,6 +305,12 @@ extern const struct objs nightobjs[];
 
 extern gid_t	egid;
 
+extern const char *const badguys[];
+extern const char *const list[];
+
+extern int dr, dc, row, column;
+extern char destroyed, cross;
+extern sig_t oldsig;
 
 int battlestar_move(int, int);
 void bury(void);

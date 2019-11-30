@@ -17,6 +17,7 @@
 #include <unistd.h>
 
 #include "include.h"
+#include "externs.h"
 
 void Error(const char *, const char *) __dead2;
 

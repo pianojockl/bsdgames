@@ -32,7 +32,7 @@
  */
 
 #include <sys/types.h>
-
+#include <setjmp.h>
 #include "machdep.h"
 
 	/* program mode */
@@ -332,6 +332,8 @@ int maxmove (struct ship *, int, int);
 /* lo_main.c */
 int lo_main (void);
 
+extern const char *const title[];
+
 /* misc.c */
 int range (struct ship *, struct ship *);
 struct ship *closestenemy (struct ship *, int, int);
@@ -411,3 +413,6 @@ void sync_close (int);
 void Write (int, struct ship *, long, long, long, long);
 void Writestr (int, struct ship *, const char *);
 int Sync (void);
+
+/* globals.c */
+extern jmp_buf restart;
