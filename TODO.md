@@ -4,14 +4,22 @@
 * arithmetic (not necessary)
 * atc (done)
 * bcd (not necessary)
+* bs (done)
+* boggle (done)
+* canfield (done)
 * colorbars (not necessary)
 * fish (not necessary)
 * hals_end (done)
+* hangman (not necessary)
 * mille (not necessary)
+* phantasia (done)
 * pig (not necessary)
 * ppt (not necessary)
 * quiz (not necessary)
+* rain  (done)
 * robots (not necessary)
+* sail (done)
+* snake (done)
 * tetris (done)
 * wargames (not necessary)
 * worm (not necessary)
@@ -20,19 +28,11 @@
 
 * backgammon
 * battlestar
-* bs
-* boggle 
-* canfield
 * cribbage
 * hack
-* hangman
 * hunt
 * larn
-* phantasia
-* rain 
 * rogue
-* sail
-* snake
 * trek
 
 ## CONTRIBUTORS ##
