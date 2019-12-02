@@ -78,9 +78,9 @@ private:
     size_t find_single(void);
 #endif
 
-    size_t _edge1;
-    size_t _edge2;
-    size_t _maxedge;
+//    size_t _edge1;
+//    size_t _edge2;
+//    size_t _maxedge;
 };
 
 #endif

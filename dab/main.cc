@@ -190,7 +190,7 @@ int main(int argc, char** argv)
         b.getmove();
     // Cleanup
     delete sc;
-    delete p[0];
-    delete p[1];
+    delete &p[0];
+    delete &p[1];
     return 0;
 }
