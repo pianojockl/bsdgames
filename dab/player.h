@@ -47,7 +47,7 @@ class BOARD;
 #include <stdlib.h>
 
 class PLAYER {
-  public:
+public:
     PLAYER(char who);
     virtual void play(const BOARD& b, size_t& y, size_t& x, int& dir) = 0;
 
@@ -56,16 +56,26 @@ class PLAYER {
     int domove(BOARD& b);
 
     // Member access
-    char getWho(void) const { return _who; }
+    char getWho(void) const {
+        return _who;
+    }
 
     // Display
-    size_t getScore(void) const { return _score; }
-    size_t getTotal(void) const { return _total; }
-    size_t getGames(void) const { return _games; }
-    size_t getTies(void) const { return _ties;   }
+    size_t getScore(void) const {
+        return _score;
+    }
+    size_t getTotal(void) const {
+        return _total;
+    }
+    size_t getGames(void) const {
+        return _games;
+    }
+    size_t getTies(void) const {
+        return _ties;
+    }
     void wl(size_t sc);
 
-  private:
+private:
     char _who;
     size_t _score;
     size_t _total;

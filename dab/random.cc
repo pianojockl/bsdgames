@@ -72,15 +72,15 @@ size_t RANDOM::operator() (void)
 {
     // No more values
     if (_nv == _bs)
-	return _bs;
+        return _bs;
 
     for (;;) {
-	size_t r = ::lrand48();
-	size_t z = r % _bs;
+        size_t r = ::lrand48();
+        size_t z = r % _bs;
         if (!isset(z)) {
-	    set(z);
-	    _nv++;
-	    return z;
-	}
+            set(z);
+            _nv++;
+            return z;
+        }
     }
 }

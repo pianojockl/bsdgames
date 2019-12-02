@@ -46,7 +46,7 @@
 #include "gamescreen.h"
 
 class TTYSCRN : public GAMESCREEN {
-  public:
+public:
     // Constructor that can fail
     static TTYSCRN*  create(int acs, size_t y, size_t x);
     ~TTYSCRN();
@@ -64,14 +64,14 @@ class TTYSCRN : public GAMESCREEN {
     void total(size_t s, const PLAYER& p);
     void ties(const PLAYER& p);
 
-  private:
+private:
     enum {
-	offsx = 2,	// board x offset from top left corner
-	offsy = 2,	// board y offset from top left corner
-	offsscore = 0,	// score y offset from top of the board
-	offstotal = 3,	// total y offset from top of the board
-	offsgames = 6,	// games y offset from top of the board
-	offsties = 8	// ties y offset from top of the board
+        offsx = 2,	// board x offset from top left corner
+        offsy = 2,	// board y offset from top left corner
+        offsscore = 0,	// score y offset from top of the board
+        offstotal = 3,	// total y offset from top of the board
+        offsgames = 6,	// games y offset from top of the board
+        offsties = 8	// ties y offset from top of the board
     };
     size_t _sx, _sy;	// board size
     size_t _tx, _ty;	// tty size

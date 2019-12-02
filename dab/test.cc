@@ -52,6 +52,6 @@ main(void)
     RANDOM rd(10);
 
     for (size_t x = rd(); x < 10; x = rd())
-	std::cout << "x=" << x << std::endl;
+        std::cout << "x=" << x << std::endl;
     return 0;
 }

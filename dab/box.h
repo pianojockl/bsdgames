@@ -49,20 +49,20 @@
 class BOARD;
 
 class POINT {
-  public:
+public:
     int x;
     int y;
 };
 
 class BOX {
-  public:
+public:
     enum EDGE {
-	first  = 0,
-	top    = 0,
-	bottom = 1,
-	left   = 2,
-	right  = 3,
-	last   = 4,
+        first  = 0,
+        top    = 0,
+        bottom = 1,
+        left   = 2,
+        right  = 3,
+        last   = 4,
     };
 
     BOX(size_t py, size_t px, BOARD& b);
@@ -89,7 +89,7 @@ class BOX {
     // Character symbols of the four edges
     static const int syms[BOX::last];
 
-  private:
+private:
     void addcorner(size_t y, size_t x);	// add a corner character
 
     size_t _centerx;	// Coordinates of the center in board units

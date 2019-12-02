@@ -48,19 +48,19 @@
 class PLAYER;
 
 class GAMESCREEN {
-  public:
+public:
     enum EDGE {
-	GS_HLINE,
-	GS_VLINE,
-	GS_ULCORNER,
-	GS_URCORNER,
-	GS_LLCORNER,
-	GS_LRCORNER,
-	GS_LTEE,
-	GS_RTEE,
-	GS_TTEE,
-	GS_BTEE,
-	GS_PLUS
+        GS_HLINE,
+        GS_VLINE,
+        GS_ULCORNER,
+        GS_URCORNER,
+        GS_LLCORNER,
+        GS_LRCORNER,
+        GS_LTEE,
+        GS_RTEE,
+        GS_TTEE,
+        GS_BTEE,
+        GS_PLUS
     };
     virtual ~GAMESCREEN();
     virtual void clean(void) = 0;			// Clear screen

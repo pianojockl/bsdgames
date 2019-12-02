@@ -48,12 +48,13 @@ RCSID("$NetBSD: box.cc,v 1.1 2003/12/27 01:16:55 christos Exp $")
 #include <curses.h>
 
 const POINT BOX::edges[BOX::last] =
-    { { 0, -1 }, { 0, 1 }, { -1, 0 }, { 1, 0 } };
+{ { 0, -1 }, { 0, 1 }, { -1, 0 }, { 1, 0 } };
 const POINT BOX::corners[BOX::last] =
-    { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
+{ { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
 const int  BOX::syms[BOX::last] =
-    { GAMESCREEN::GS_HLINE, GAMESCREEN::GS_HLINE,
-      GAMESCREEN::GS_VLINE, GAMESCREEN::GS_VLINE };
+{   GAMESCREEN::GS_HLINE, GAMESCREEN::GS_HLINE,
+    GAMESCREEN::GS_VLINE, GAMESCREEN::GS_VLINE
+};
 
 BOX::BOX(size_t py, size_t px, BOARD& b) :
     _b(b)
@@ -67,25 +68,25 @@ void BOX::addcorner(size_t y, size_t x)
     char sym;
     _b.getScrn()->moveto(y, x);
     if (x == 0) {
-	if (y == 0)
-	    sym = GAMESCREEN::GS_ULCORNER;
-	else if (y == _b.ty() - 1)
-	    sym = GAMESCREEN::GS_LLCORNER;
-	else
-	    sym = GAMESCREEN::GS_LTEE;
+        if (y == 0)
+            sym = GAMESCREEN::GS_ULCORNER;
+        else if (y == _b.ty() - 1)
+            sym = GAMESCREEN::GS_LLCORNER;
+        else
+            sym = GAMESCREEN::GS_LTEE;
     } else if (x == _b.tx() - 1) {
-	if (y == 0)
-	    sym = GAMESCREEN::GS_URCORNER;
-	else if (y == _b.ty() - 1)
-	    sym = GAMESCREEN::GS_LRCORNER;
-	else
-	    sym = GAMESCREEN::GS_RTEE;
+        if (y == 0)
+            sym = GAMESCREEN::GS_URCORNER;
+        else if (y == _b.ty() - 1)
+            sym = GAMESCREEN::GS_LRCORNER;
+        else
+            sym = GAMESCREEN::GS_RTEE;
     } else if (y == 0)
-	sym = GAMESCREEN::GS_TTEE;
+        sym = GAMESCREEN::GS_TTEE;
     else if (y == _b.ty() - 1)
-	sym = GAMESCREEN::GS_BTEE;
+        sym = GAMESCREEN::GS_BTEE;
     else
-	sym = GAMESCREEN::GS_PLUS;
+        sym = GAMESCREEN::GS_PLUS;
 
     _b.getScrn()->addedge(sym);
 }
@@ -95,15 +96,15 @@ void BOX::paint(void)
 {
     int e;
     if (_b.getScrn() == NULL)
-	return;
+        return;
 
     _b.getScrn()->moveto(_centery, _centerx);
     _b.getScrn()->addsym(name());
 
     for (e = BOX::first; e < BOX::last; e++) {
-	addcorner(_centery + corners[e].y, _centerx + corners[e].x);
-	_b.getScrn()->moveto(_centery + edges[e].y, _centerx + edges[e].x);
-	_b.getScrn()->addedge(edge((EDGE) e));
+        addcorner(_centery + corners[e].y, _centerx + corners[e].x);
+        _b.getScrn()->moveto(_centery + edges[e].y, _centerx + edges[e].x);
+        _b.getScrn()->addedge(edge((EDGE) e));
     }
     _b.getScrn()->redraw();
 }
@@ -144,7 +145,7 @@ int BOX::count(void) const
     int cnt = 0;
 
     for (int e = BOX::first; e < BOX::last; e++)
-	cnt += isset((EDGE) e);
+        cnt += isset((EDGE) e);
     return cnt;
 }
 
@@ -152,6 +153,6 @@ int BOX::count(void) const
 void BOX::reset(void)
 {
     for (int e = BOX::first; e < BOX::last; e++)
-	clr((EDGE) e);
+        clr((EDGE) e);
     name() = ' ';
-} 
+}

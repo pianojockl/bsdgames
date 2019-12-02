@@ -70,91 +70,91 @@ void TTYSCRN::addedge(const int sym)
     int nsym;
 #ifdef A_ALTCHARSET
     if (_acs) {
-	switch (sym) {
-	case GS_HLINE:
-	    nsym = ACS_HLINE;
-	    break;
-	case GS_VLINE:
-	    nsym = ACS_VLINE;
-	    break;
-	case GS_ULCORNER:
-	    nsym = ACS_ULCORNER;
-	    break;
-	case GS_URCORNER:
-	    nsym = ACS_URCORNER;
-	    break;
-	case GS_LLCORNER:
-	    nsym = ACS_LLCORNER;
-	    break;
-	case GS_LRCORNER:
-	    nsym = ACS_LRCORNER;
-	    break;
-	case GS_LTEE:
-	    nsym = ACS_LTEE;
-	    break;
-	case GS_RTEE:
-	    nsym = ACS_RTEE;
-	    break;
-	case GS_TTEE:
-	    nsym = ACS_TTEE;
-	    break;
-	case GS_BTEE:
-	    nsym = ACS_BTEE;
-	    break;
-	case GS_PLUS:
-	    nsym = ACS_PLUS;
-	    break;
-	case ' ':
-	    addsym(' ');
-	    return;
-	default:
-	    ::abort();
-	}
-	attron(A_ALTCHARSET);
-	addch(nsym);
-	attroff(A_ALTCHARSET);
-	return;
+        switch (sym) {
+        case GS_HLINE:
+            nsym = ACS_HLINE;
+            break;
+        case GS_VLINE:
+            nsym = ACS_VLINE;
+            break;
+        case GS_ULCORNER:
+            nsym = ACS_ULCORNER;
+            break;
+        case GS_URCORNER:
+            nsym = ACS_URCORNER;
+            break;
+        case GS_LLCORNER:
+            nsym = ACS_LLCORNER;
+            break;
+        case GS_LRCORNER:
+            nsym = ACS_LRCORNER;
+            break;
+        case GS_LTEE:
+            nsym = ACS_LTEE;
+            break;
+        case GS_RTEE:
+            nsym = ACS_RTEE;
+            break;
+        case GS_TTEE:
+            nsym = ACS_TTEE;
+            break;
+        case GS_BTEE:
+            nsym = ACS_BTEE;
+            break;
+        case GS_PLUS:
+            nsym = ACS_PLUS;
+            break;
+        case ' ':
+            addsym(' ');
+            return;
+        default:
+            ::abort();
+        }
+        attron(A_ALTCHARSET);
+        addch(nsym);
+        attroff(A_ALTCHARSET);
+        return;
     }
 #endif
     switch (sym) {
     case GS_HLINE:
-	nsym = '-';
-	break;
+        nsym = '-';
+        break;
     case GS_VLINE:
-	nsym = '|';
-	break;
+        nsym = '|';
+        break;
     case GS_ULCORNER:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_URCORNER:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_LLCORNER:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_LRCORNER:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_LTEE:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_RTEE:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_TTEE:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_BTEE:
-	nsym = '.';
-	break;
+        nsym = '.';
+        break;
     case GS_PLUS:
-	nsym = '+';
-	break;
+        nsym = '+';
+        break;
     case ' ':
-	addsym(' ');
-	return;
+        addsym(' ');
+        return;
     default:
-	::abort();
+        ::abort();
     }
     addsym(nsym);
 }
@@ -178,19 +178,19 @@ int TTYSCRN::getinput(void)
 void TTYSCRN::score(size_t s, const PLAYER& p)
 {
     mvwprintw(stdscr, _sy + s + TTYSCRN::offsscore, _sx, "S %c:%5zd", p.getWho(),
-	      p.getScore());
+              p.getScore());
 }
 
 void TTYSCRN::total(size_t s, const PLAYER& p)
 {
     mvwprintw(stdscr, _sy + s + TTYSCRN::offstotal, _sx, "T %c:%5zd", p.getWho(),
-	      p.getTotal());
+              p.getTotal());
 }
 
 void TTYSCRN::games(size_t s, const PLAYER& p)
 {
     mvwprintw(stdscr, _sy + s + TTYSCRN::offsgames, _sx, "G %c:%5zd", p.getWho(),
-	      p.getGames());
+              p.getGames());
 }
 
 void TTYSCRN::ties(const PLAYER& p)
@@ -208,9 +208,9 @@ TTYSCRN* TTYSCRN::create(int acs, size_t y, size_t x)
     ty = getmaxy(stdscr);
 
     if (tx == ERR || ty == ERR || (size_t)tx < x * 2 + TTYSCRN::offsx + 12
-	|| (size_t)ty < y * 2 + TTYSCRN::offsy) {
-	endwin();
-	return NULL;
+            || (size_t)ty < y * 2 + TTYSCRN::offsy) {
+        endwin();
+        return NULL;
     }
     cbreak();
     noecho();

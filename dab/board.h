@@ -49,19 +49,31 @@ class GAMESCREEN;
 class PLAYER;
 
 class BOARD {
-  public:
+public:
     // Constructors and destructor
     BOARD(size_t y, size_t x, GAMESCREEN* scrn);// For the main screen
     BOARD(const BOARD& b);			// For scratch screens
     ~BOARD();
 
     // member access
-    size_t nx(void) const { return _nx; }
-    size_t ny(void) const { return _ny; }
-    size_t tx(void) const { return _tx; }
-    size_t ty(void) const { return _ty; }
-    GAMESCREEN* getScrn(void) const { return _scrn; }
-    int& data(size_t y, size_t x) { return _b[y][x]; }
+    size_t nx(void) const {
+        return _nx;
+    }
+    size_t ny(void) const {
+        return _ny;
+    }
+    size_t tx(void) const {
+        return _tx;
+    }
+    size_t ty(void) const {
+        return _ty;
+    }
+    GAMESCREEN* getScrn(void) const {
+        return _scrn;
+    }
+    int& data(size_t y, size_t x) {
+        return _b[y][x];
+    }
 
     // Computing
     int domove(size_t y, size_t x, int dir, char c);	// Play move
@@ -82,7 +94,7 @@ class BOARD {
     void abort(const char *s, ...) const;		// Algorithm error
 
 
-  private:
+private:
     size_t	_ty, _tx;	// number of symbols in x and y dimension
     size_t	_ny, _nx;	// number of boxes in the x and y dimension
     int**	_b;		// board array of symbols

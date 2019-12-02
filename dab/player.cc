@@ -74,25 +74,25 @@ int PLAYER::domove(BOARD& b)
     int score;
 
     for (;;) {
-	if (b.full())
-	    return 0;
+        if (b.full())
+            return 0;
 
-	play(b, y, x, dir);
+        play(b, y, x, dir);
 
-	switch (score = b.domove(y, x, dir, _who)) {
-	case 0:
-	    // No closure
-	    return 1;
+        switch (score = b.domove(y, x, dir, _who)) {
+        case 0:
+            // No closure
+            return 1;
 
-	case -1:
-	    // Not a valid move
-	    b.bell();
-	    break;
+        case -1:
+            // Not a valid move
+            b.bell();
+            break;
 
-	default:
-	    // Closure, play again
-	    _score += score;
-	    break;
-	}
+        default:
+            // Closure, play again
+            _score += score;
+            break;
+        }
     }
 }

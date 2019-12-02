@@ -48,11 +48,11 @@
 class BOARD;
 
 class HUMAN : public PLAYER {
-  public:
+public:
     HUMAN(const char c);
     // Return move in y, x, and dir
     void play(const BOARD& b, size_t& y, size_t& x, int& dir);
-  private:
+private:
     size_t _curx, _cury;	// Current cursor position
 };
 

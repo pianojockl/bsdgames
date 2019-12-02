@@ -49,17 +49,17 @@ class BOARD;
 class BOX;
 
 class ALGOR : public PLAYER {
-  public:
+public:
     ALGOR(const char c);
     // Return a proposed move in (y, x, dir)
     void play(const BOARD& b, size_t& y, size_t& x, int& dir);
 
-  private:
+private:
     // Closure searches
     int find_closure(size_t& y, size_t& x, int& dir, BOARD& b);
     int find_max_closure(size_t& y, size_t& x, int& dir, const BOARD& b);
     int find_min_closure1(size_t& y, size_t& x, int& dir, const BOARD& b,
-			  int last);
+                          int last);
     int find_min_closure(size_t& y, size_t& x, int& dir, const BOARD& b);
 
     // Move searches
@@ -68,7 +68,7 @@ class ALGOR : public PLAYER {
 
     // Move Attempts
     int try_bad_turn(BOX& box, size_t& y, size_t& x, int& dir, BOARD& b,
-		     int last);
+                     int last);
     int try_good_turn(BOX& box, size_t y, size_t x, int& dir, BOARD& b);
 
     // Utils

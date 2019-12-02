@@ -57,11 +57,11 @@ static void usage(char* pname)
 {
     char* p = strrchr(pname, '/');
     if (p)
-	p++;
+        p++;
     else
-	p = pname;
+        p = pname;
     std::cerr << "Usage: " << p
-	<< " [-w] [-p <c|h><c|h>] [-n <ngames>] [<ydim> [<xdim>]]" << std::endl;
+              << " [-w] [-p <c|h><c|h>] [-n <ngames>] [<ydim> [<xdim>]]" << std::endl;
 }
 
 // Play a single game
@@ -75,12 +75,12 @@ static void play(BOARD& b, PLAYER* p[2])
 
     // Alternate turns between players, scoring each turn
     for (size_t i = 0;; i = (i + 1) & 1) {
-	b.score(i, *p[i]);
-	if (!p[i]->domove(b)) {
-	    // No more moves, game over
-	    break;
-	}
-	b.score(i, *p[i]);
+        b.score(i, *p[i]);
+        if (!p[i]->domove(b)) {
+            // No more moves, game over
+            break;
+        }
+        b.score(i, *p[i]);
     }
 
     // Find who won
@@ -111,83 +111,83 @@ int main(int argc, char** argv)
     int acs = 1;
 
     while ((c = getopt(argc, argv, "awp:n:")) != -1)
-	switch (c) {
-	case 'a':
-	    acs = 0;
-	    break;
-	case 'w':
-	    wt++;
-	    break;
+        switch (c) {
+        case 'a':
+            acs = 0;
+            break;
+        case 'w':
+            wt++;
+            break;
 
-	case 'p':
-	    nc = optarg;
-	    break;
+        case 'p':
+            nc = optarg;
+            break;
 
-	case 'n':
-	    nn = atoi(optarg);
-	    break;
+        case 'n':
+            nn = atoi(optarg);
+            break;
 
-	default:
-	    usage(argv[0]);
-	    return 1;
-	}
+        default:
+            usage(argv[0]);
+            return 1;
+        }
 
     // Get the size of the board if specified
     switch (argc - optind) {
     case 0:
-	ny = nx = 3;
-	break;
+        ny = nx = 3;
+        break;
 
     case 1:
-	ny = nx = atoi(argv[optind]);
-	break;
+        ny = nx = atoi(argv[optind]);
+        break;
 
     case 2:
-	nx = atoi(argv[optind]);
-	ny = atoi(argv[optind+1]);
-	break;
+        nx = atoi(argv[optind]);
+        ny = atoi(argv[optind+1]);
+        break;
 
     default:
-	usage(argv[0]);
-	return 1;
+        usage(argv[0]);
+        return 1;
     }
-    
+
 
     PLAYER* p[2];
 
     // Allocate players
     for (size_t i = 0; i < 2; i++) {
-	char n = nc[1] == nc[0] ? i + '0' : nc[i];
-	switch (nc[i]) {
-	case 'c':
-	    p[i] = new ALGOR(n);
-	    break;
+        char n = nc[1] == nc[0] ? i + '0' : nc[i];
+        switch (nc[i]) {
+        case 'c':
+            p[i] = new ALGOR(n);
+            break;
 
-	case 'h':
-	    p[i] = new HUMAN(n);
-	    break;
+        case 'h':
+            p[i] = new HUMAN(n);
+            break;
 
-	default:
-	    usage(argv[0]);
-	    return 1;
-	}
+        default:
+            usage(argv[0]);
+            return 1;
+        }
     }
 
     GAMESCREEN *sc = TTYSCRN::create(acs, ny, nx);
     if (sc == NULL)
-	::errx(1, "Dimensions too large for current screen.");
+        ::errx(1, "Dimensions too large for current screen.");
 
     BOARD b(ny, nx, sc);
 
     // Play games
     while (nn--) {
-	play(b, p);
-	if (wt)
-	    b.getmove();
+        play(b, p);
+        if (wt)
+            b.getmove();
     }
 
     if (wt == 0)
-	b.getmove();
+        b.getmove();
     // Cleanup
     delete sc;
     delete p[0];

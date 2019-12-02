@@ -37,7 +37,7 @@
  */
 
 /*
- * random.h: Randomizer; returns a random sequence of values from [0..fx) 
+ * random.h: Randomizer; returns a random sequence of values from [0..fx)
  *	     returning each value exactly once. After fx calls it returns fx.
  */
 
@@ -47,7 +47,7 @@
 #include <stdlib.h>
 
 class RANDOM {
-  public:
+public:
     // Constructor and destructor
     RANDOM(size_t fx);
     ~RANDOM();
@@ -55,14 +55,14 @@ class RANDOM {
     size_t operator () (void);	// Next random
     void clear(void);		// Reset
 
-  private:
+private:
 
     int isset(size_t z) {
-	return (_bm[z >> 3] & (1 << (z & 7))) != 0;
+        return (_bm[z >> 3] & (1 << (z & 7))) != 0;
     }
 
     void set(size_t z) {
-	_bm[z >> 3] |= (1 << (z & 7));
+        _bm[z >> 3] |= (1 << (z & 7));
     }
 
     char*	_bm;	// Bitmap indicating the numbers used

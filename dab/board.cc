@@ -61,7 +61,7 @@ BOARD::BOARD(size_t y, size_t x, GAMESCREEN* scrn) :
     _b = new int*[_ty];
 
     for (y = 0; y < _ty; y++)
-	_b[y] = new int[_tx];
+        _b[y] = new int[_tx];
 
     init();
 }
@@ -76,8 +76,8 @@ BOARD::BOARD(const BOARD& b) :
     _b = new int*[_ty];
 
     for (size_t y = 0; y < _ty; y++) {
-	_b[y] = new int[_tx];
-	(void) memcpy(_b[y], b._b[y], _tx * sizeof(int));
+        _b[y] = new int[_tx];
+        (void) memcpy(_b[y], b._b[y], _tx * sizeof(int));
     }
 }
 
@@ -86,7 +86,7 @@ BOARD::~BOARD()
     size_t y;
 
     for (y = 0; y < _ty; y++)
-	delete[] _b[y];
+        delete[] _b[y];
 
     delete[] _b;
 }
@@ -96,11 +96,11 @@ void BOARD::init(void)
 {
     size_t x, y;
 
-    for (y = 0; y < _ny; y++) 
-	for (x = 0; x < _nx; x++) {
-	    BOX box(y, x, *this);
-	    box.reset();
-	}
+    for (y = 0; y < _ny; y++)
+        for (x = 0; x < _nx; x++) {
+            BOX box(y, x, *this);
+            box.reset();
+        }
 }
 
 /*
@@ -116,20 +116,20 @@ int BOARD::domove(size_t y, size_t x, int dir, char c)
 
     // Check if out of bounds
     if (!bounds(y, x))
-	return -1;
+        return -1;
 
     BOX box1(y, x, *this);
 
     // Check if the edge is already there
     if (box1.isset(dir))
-	return -1;
+        return -1;
 
     box1.set(dir);
 
     if (box1.count() == 4) {
-	// New box; name it and count it
-	box1.name() = c;
-	closed++;
+        // New box; name it and count it
+        box1.name() = c;
+        closed++;
     }
 
     box1.paint();
@@ -139,12 +139,12 @@ int BOARD::domove(size_t y, size_t x, int dir, char c)
     y += BOX::edges[dir].y;
 
     if (bounds(y, x)) {
-	BOX box2(y, x, *this);
-	if (box2.count() == 4) {
-	    box2.name() = c;
-	    box2.paint();
-	    closed++;
-	}
+        BOX box2(y, x, *this);
+        if (box2.count() == 4) {
+            box2.name() = c;
+            box2.paint();
+            closed++;
+        }
     }
     return closed;
 }
@@ -153,11 +153,11 @@ int BOARD::domove(size_t y, size_t x, int dir, char c)
 int BOARD::full(void) const
 {
     for (size_t y = 0; y < _ny; y++)
-	for (size_t x = 0; x < _nx; x++) {
-	    BOX box(y, x, (BOARD&) *this);
-	    if (box.count() != 4)
-		return 0;
-	}
+        for (size_t x = 0; x < _nx; x++) {
+            BOX box(y, x, (BOARD&) *this);
+            if (box.count() != 4)
+                return 0;
+        }
     return 1;
 }
 
@@ -172,17 +172,17 @@ int BOARD::bounds(size_t y, size_t x) const
 void BOARD::paint(void) const
 {
     for (size_t y = 0; y < _ny; y++)
-	for (size_t x = 0; x < _nx; x++) {
-	    BOX box(y, x, (BOARD&) *this);
-	    box.paint();
-	}
+        for (size_t x = 0; x < _nx; x++) {
+            BOX box(y, x, (BOARD&) *this);
+            box.paint();
+        }
 }
 
 // Clear the screen
 void BOARD::clean(void) const
 {
     if (!_scrn)
-	return;
+        return;
     _scrn->clean();
 }
 
@@ -190,7 +190,7 @@ void BOARD::clean(void) const
 void BOARD::setpos(size_t y, size_t x) const
 {
     if (!_scrn)
-	return;
+        return;
     _scrn->moveto(y, x);
     _scrn->redraw();
 }
@@ -199,7 +199,7 @@ void BOARD::setpos(size_t y, size_t x) const
 int BOARD::getmove(void) const
 {
     if (!_scrn)
-	return 'q';
+        return 'q';
     _scrn->redraw();
     return _scrn->getinput();
 }
@@ -208,7 +208,7 @@ int BOARD::getmove(void) const
 void BOARD::bell(void) const
 {
     if (!_scrn)
-	return;
+        return;
     _scrn->bell();
 }
 
@@ -216,7 +216,7 @@ void BOARD::bell(void) const
 void BOARD::score(size_t i, const PLAYER& p)
 {
     if (_scrn == NULL)
-	return;
+        return;
     _scrn->score(i, p);
 }
 
@@ -224,7 +224,7 @@ void BOARD::score(size_t i, const PLAYER& p)
 void BOARD::games(size_t i, const PLAYER& p)
 {
     if (_scrn == NULL)
-	return;
+        return;
     _scrn->games(i, p);
 }
 
@@ -232,7 +232,7 @@ void BOARD::games(size_t i, const PLAYER& p)
 void BOARD::total(size_t i, const PLAYER& p)
 {
     if (_scrn == NULL)
-	return;
+        return;
     _scrn->total(i, p);
 }
 
@@ -240,7 +240,7 @@ void BOARD::total(size_t i, const PLAYER& p)
 void BOARD::ties(const PLAYER& p)
 {
     if (_scrn == NULL)
-	return;
+        return;
     _scrn->ties(p);
 }
 
@@ -248,7 +248,7 @@ void BOARD::ties(const PLAYER& p)
 void BOARD::abort(const char* s, ...) const
 {
     for (size_t i = 0; i < _ny; i++)
-	fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
 
     va_list ap;
     fprintf(stderr, "Algorithm internal error: ");

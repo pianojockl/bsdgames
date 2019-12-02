@@ -59,6 +59,7 @@
 * phantasia
 * pig
 * ppt
+* primes (done)
 * quiz
 * rain
 * robots

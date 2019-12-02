@@ -65,17 +65,17 @@ int ALGOR::find_closure(size_t& y, size_t& x, int& dir, BOARD& b)
     RANDOM rdy(b.ny()), rdx(b.nx());
 
     for (y = rdy(); y < b.ny(); y = rdy()) {
-	rdx.clear();
-	for (x = rdx(); x < b.nx(); x = rdx()) {
-	    BOX box(y, x, b);
-	    if (box.count() == 3) {
-		for (dir = BOX::first; dir < BOX::last; dir++)
-		    if (!box.isset(dir))
-			return 1;
-		b.abort("find_closure: 3 sided box[%d,%d] has no free sides",
-			y, x);
-	    }
-	}
+        rdx.clear();
+        for (x = rdx(); x < b.nx(); x = rdx()) {
+            BOX box(y, x, b);
+            if (box.count() == 3) {
+                for (dir = BOX::first; dir < BOX::last; dir++)
+                    if (!box.isset(dir))
+                        return 1;
+                b.abort("find_closure: 3 sided box[%d,%d] has no free sides",
+                        y, x);
+            }
+        }
     }
     return 0;
 }
@@ -87,16 +87,16 @@ size_t ALGOR::find_single()
 
     // Find the number of single edges in use
     for (size_t x = 0; x < b.nx(); x++) {
-	BOX tbox(0, x, b);
-	ne += tbox.isset(BOX::top);
-	BOX bbox(b.ny() - 1, x, b);
-	ne += bbox.isset(BOX::bottom);
+        BOX tbox(0, x, b);
+        ne += tbox.isset(BOX::top);
+        BOX bbox(b.ny() - 1, x, b);
+        ne += bbox.isset(BOX::bottom);
     }
     for (size_t y = 0; y < _b.ny(); y++) {
-	BOX lbox(y, 0, b);
-	ne += lbox.isset(BOX::left);
-	BOX rbox(y,_b.nx() - 1, b);
-	ne += rbox.isset(BOX::right);
+        BOX lbox(y, 0, b);
+        ne += lbox.isset(BOX::left);
+        BOX rbox(y,_b.nx() - 1, b);
+        ne += rbox.isset(BOX::right);
     }
     return ne;
 }
@@ -112,16 +112,16 @@ size_t ALGOR::count_closure(size_t& y, size_t& x, int& dir, BOARD& b)
     int tdir, mv;
 
     while (find_closure(ty, tx, tdir, b)) {
-	if (i == 0) {
-	    // Mark the beginning of the closure
-	    x = tx;
-	    y = ty;
-	    dir = tdir;
-	}
-	if ((mv = b.domove(ty, tx, tdir, getWho())) == -1)
-	    b.abort("count_closure: Invalid move (%d, %d, %d)", y, x, dir);
-	else
-	    i += mv;
+        if (i == 0) {
+            // Mark the beginning of the closure
+            x = tx;
+            y = ty;
+            dir = tdir;
+        }
+        if ((mv = b.domove(ty, tx, tdir, getWho())) == -1)
+            b.abort("count_closure: Invalid move (%d, %d, %d)", y, x, dir);
+        else
+            i += mv;
     }
     return i;
 }
@@ -140,13 +140,13 @@ int ALGOR::find_max_closure(size_t& y, size_t& x, int& dir, const BOARD& b)
     size_t tx, ty, maxx = ~0, maxy = ~0;
 
     while ((nbox = count_closure(ty, tx, tdir, nb)) != 0)
-	if (nbox > maxbox) {
-	    // This closure is better, update max
-	    maxbox = nbox;
-	    maxx = tx;
-	    maxy = ty;
-	    maxdir = tdir;
-	}
+        if (nbox > maxbox) {
+            // This closure is better, update max
+            maxbox = nbox;
+            maxx = tx;
+            maxy = ty;
+            maxdir = tdir;
+        }
 
     // Return the max found
     y = maxy;
@@ -162,23 +162,23 @@ int ALGOR::try_good_turn(BOX& box, size_t y, size_t x, int& dir, BOARD& b)
 {
     // Sanity check; we must have a good box
     if (box.count() >= 2)
-	b.abort("try_good_turn: box[%d,%d] has more than 2 sides occupied",
-		y, x);
+        b.abort("try_good_turn: box[%d,%d] has more than 2 sides occupied",
+                y, x);
 
     // Make sure we don't make a closure in an adjacent box.
     // We use a random direction to randomize the game
     RANDOM rd(BOX::last);
     for (dir = rd(); dir < BOX::last; dir = rd())
-	if (!box.isset(dir)) {
-	    size_t by = y + BOX::edges[dir].y;
-	    size_t bx = x + BOX::edges[dir].x;
-	    if (!b.bounds(by, bx))
-		return 1;
+        if (!box.isset(dir)) {
+            size_t by = y + BOX::edges[dir].y;
+            size_t bx = x + BOX::edges[dir].x;
+            if (!b.bounds(by, bx))
+                return 1;
 
-	    BOX nbox(by, bx, b);
-	    if (nbox.count() < 2)
-		return 1;
-	}
+            BOX nbox(by, bx, b);
+            if (nbox.count() < 2)
+                return 1;
+        }
 
     return 0;
 }
@@ -192,12 +192,12 @@ int ALGOR::find_good_turn(size_t& y, size_t& x, int& dir, const BOARD& b)
     RANDOM rdy(b.ny()), rdx(b.nx());
 
     for (y = rdy(); y < b.ny(); y = rdy()) {
-	rdx.clear();
-	for (x = rdx(); x < b.nx(); x = rdx()) {
-	    BOX box(y, x, nb);
-	    if (box.count() < 2 && try_good_turn(box, y, x, dir, nb))
-		return 1;
-	}
+        rdx.clear();
+        for (x = rdx(); x < b.nx(); x = rdx()) {
+            BOX box(y, x, nb);
+            if (box.count() < 2 && try_good_turn(box, y, x, dir, nb))
+                return 1;
+        }
     }
     return 0;
 }
@@ -205,18 +205,18 @@ int ALGOR::find_good_turn(size_t& y, size_t& x, int& dir, const BOARD& b)
 // On a box with 2 edges, return the first or the last free edge, depending
 // on the order specified
 int ALGOR::try_bad_turn(BOX& box, size_t& y, size_t& x, int& dir, BOARD& b,
-			int last)
+                        int last)
 {
     if (4 - box.count() <= last)
-	b.abort("try_bad_turn: Called at [%d,%d] for %d with %d",
-		y, x, last, box.count());
+        b.abort("try_bad_turn: Called at [%d,%d] for %d with %d",
+                y, x, last, box.count());
     for (dir = BOX::first; dir < BOX::last; dir++)
-	if (!box.isset(dir)) {
-	    if (!last)
-		return 1;
-	    else
-		last--;
-	}
+        if (!box.isset(dir)) {
+            if (!last)
+                return 1;
+            else
+                last--;
+        }
     return 0;
 }
 
@@ -226,19 +226,19 @@ int ALGOR::find_bad_turn(size_t& y, size_t& x, int& dir, BOARD& b, int last)
 {
     RANDOM rdy(b.ny()), rdx(b.nx());
     for (y = rdy(); y < b.ny(); y = rdy()) {
-	rdx.clear();
-	for (x = rdx(); x < b.nx(); x = rdx()) {
-	    BOX box(y, x, b);
-	    if ((4 - box.count()) > last &&
-		try_bad_turn(box, y, x, dir, b, last))
-		return 1;
-	}
+        rdx.clear();
+        for (x = rdx(); x < b.nx(); x = rdx()) {
+            BOX box(y, x, b);
+            if ((4 - box.count()) > last &&
+                    try_bad_turn(box, y, x, dir, b, last))
+                return 1;
+        }
     }
     return 0;
 }
 
 int ALGOR::find_min_closure1(size_t& y, size_t& x, int& dir, const BOARD& b,
-			    int last)
+                             int last)
 {
     BOARD nb(b);
     int tdir, mindir = -1, xdir, mv;
@@ -249,21 +249,21 @@ int ALGOR::find_min_closure1(size_t& y, size_t& x, int& dir, const BOARD& b,
     while (find_bad_turn(ty, tx, tdir, nb, last)) {
 
         // Play a bad move that would cause the opponent's closure
-	if ((mv = nb.domove(ty, tx, tdir, getWho())) != 0)
-	    b.abort("find_min_closure1: Invalid move %d (%d, %d, %d)", mv,
-		    ty, tx, tdir);
+        if ((mv = nb.domove(ty, tx, tdir, getWho())) != 0)
+            b.abort("find_min_closure1: Invalid move %d (%d, %d, %d)", mv,
+                    ty, tx, tdir);
 
         // Count the opponent's closure
-	if ((nbox = count_closure(y, x, xdir, nb)) == 0)
-	    b.abort("find_min_closure1: no closure found");
+        if ((nbox = count_closure(y, x, xdir, nb)) == 0)
+            b.abort("find_min_closure1: no closure found");
 
-	if (nbox <= minbox) {
-	    // This closure has fewer boxes
-	    minbox = nbox;
-	    minx = tx;
-	    miny = ty;
-	    mindir = tdir;
-	}
+        if (nbox <= minbox) {
+            // This closure has fewer boxes
+            minbox = nbox;
+            minx = tx;
+            miny = ty;
+            mindir = tdir;
+        }
     }
 
     y = miny;
@@ -282,12 +282,12 @@ int ALGOR::find_min_closure(size_t& y, size_t& x, int& dir, const BOARD& b)
     int count = b.ny() * b.nx() + 1, count1;
 
     for (size_t i = 0; i < 3; i++)
-	if (count > (count1 = find_min_closure1(y1, x1, dir1, b, i))) {
-	    count = count1;
-	    y = y1;
-	    x = x1;
-	    dir = dir1;
-	}
+        if (count > (count1 = find_min_closure1(y1, x1, dir1, b, i))) {
+            count = count1;
+            y = y1;
+            x = x1;
+            dir = dir1;
+        }
 
     return (size_t) count != b.ny() * b.nx() + 1;
 }
@@ -297,7 +297,7 @@ void ALGOR::play(const BOARD& b, size_t& y, size_t& x, int& dir)
 {
     // See if we can close the largest closure available
     if (find_max_closure(y, x, dir, b))
-	return;
+        return;
 
 #ifdef notyet
     size_t sgl = find_single();
@@ -306,9 +306,9 @@ void ALGOR::play(const BOARD& b, size_t& y, size_t& x, int& dir)
 
     // See if we can play an edge without giving the opponent a box
     if (find_good_turn(y, x, dir, b))
-	return;
+        return;
 
     // Too bad, find the move that gives the opponent the fewer boxes
     if (find_min_closure(y, x, dir, b))
-	return;
+        return;
 }
