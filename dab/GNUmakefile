@@ -1,4 +1,4 @@
-CC = gcc
+CC = g++
 CCFLAGS = -Wall -g
 INCLUDEDIR = ./
 LDFLAGS = -lncurses -lm
