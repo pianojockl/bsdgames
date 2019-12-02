@@ -53,10 +53,8 @@
 #define	COMPUTER	0
 #define	OTHER(a)	(1 - (a))
 
-static const char *cards[] = {
-	"A", "2", "3", "4", "5", "6", "7",
-	"8", "9", "10", "J", "Q", "K", NULL,
-};
+static const char *cards[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9",
+		"10", "J", "Q", "K", NULL, };
 #define	PRC(card)	printf(" %s", cards[card])
 
 static int promode;
@@ -65,29 +63,27 @@ static int userasked[RANKS], userhand[RANKS];
 
 extern char **environ;
 
-static void chkwinner(int, int *);
+static void chkwinner(int, int*);
 static int compmove(void);
-static int countbooks(int *);
-static int countcards(int *);
-static int drawcard(int, int *);
-static int gofish(int, int, int *);
-static void goodmove(int, int, int *, int *);
+static int countbooks(int*);
+static int countcards(int*);
+static int drawcard(int, int*);
+static int gofish(int, int, int*);
+static void goodmove(int, int, int*, int*);
 static void init(void);
 static void instructions(void);
 static int nrandom(int);
-static void printhand(int *);
+static void printhand(int*);
 static void printplayer(int);
 static int promove(void);
-static void usage(void) __dead2;
+static void usage(void); // __dead2;
 static int usermove(void);
 
-int
-main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	int ch, move;
 
 	while ((ch = getopt(argc, argv, "p")) != -1)
-		switch(ch) {
+		switch (ch) {
 		case 'p':
 			promode = 1;
 			break;
@@ -118,7 +114,7 @@ main(int argc, char **argv)
 			continue;
 		}
 
-istart:		for (;;) {
+		istart: for (;;) {
 			move = compmove();
 			if (!userhand[move]) {
 				if (!gofish(move, COMPUTER, comphand))
@@ -131,9 +127,7 @@ istart:		for (;;) {
 	return (EXIT_FAILURE);
 }
 
-static int
-usermove(void)
-{
+static int usermove(void) {
 	int n;
 	const char **p;
 	char buf[256];
@@ -150,7 +144,7 @@ usermove(void)
 			continue;
 		if (buf[0] == '\n') {
 			printf("%d cards in my hand, %d in the pool.\n",
-			    countcards(comphand), countcards(deck));
+					countcards(comphand), countcards(deck));
 			printf("My books:");
 			countbooks(comphand);
 			continue;
@@ -177,7 +171,7 @@ usermove(void)
 		n = p - cards;
 		if (userhand[n] <= 3) {
 			userasked[n] = 1;
-			return(n);
+			return (n);
 		}
 		if (userhand[n] == 4) {
 			printf("You already have all of those.\n");
@@ -195,9 +189,7 @@ usermove(void)
 	/* NOTREACHED */
 }
 
-static int
-compmove(void)
-{
+static int compmove(void) {
 	static int lmove;
 
 	if (promode)
@@ -210,18 +202,16 @@ compmove(void)
 	asked[lmove] = 1;
 
 	printf("I ask you for: %s.\n", cards[lmove]);
-	return(lmove);
+	return (lmove);
 }
 
-static int
-promove(void)
-{
+static int promove(void) {
 	int i, max;
 
 	for (i = 0; i < RANKS; ++i)
 		if (userasked[i] && comphand[i] > 0 && comphand[i] < CARDS) {
 			userasked[i] = 0;
-			return(i);
+			return (i);
 		}
 	if (nrandom(3) == 1) {
 		for (i = 0;; ++i)
@@ -232,26 +222,24 @@ promove(void)
 		while (++i < RANKS)
 			if (comphand[i] != CARDS && comphand[i] > comphand[max])
 				max = i;
-		return(max);
+		return (max);
 	}
 	if (nrandom(1024) == 0723) {
 		for (i = 0; i < RANKS; ++i)
 			if (userhand[i] && comphand[i])
-				return(i);
+				return (i);
 	}
 	for (;;) {
 		for (i = 0; i < RANKS; ++i)
 			if (comphand[i] && comphand[i] != CARDS && !asked[i])
-				return(i);
+				return (i);
 		for (i = 0; i < RANKS; ++i)
 			asked[i] = 0;
 	}
 	/* NOTREACHED */
 }
 
-static int
-drawcard(int player, int *hand)
-{
+static int drawcard(int player, int *hand) {
 	int card;
 
 	while (deck[card = nrandom(RANKS)] == 0)
@@ -267,12 +255,10 @@ drawcard(int player, int *hand)
 		} else
 			printf(".\n");
 	}
-	return(card);
+	return (card);
 }
 
-static int
-gofish(int askedfor, int player, int *hand)
-{
+static int gofish(int askedfor, int player, int *hand) {
 	printplayer(OTHER(player));
 	printf("say \"GO FISH!\"\n");
 	if (askedfor == drawcard(player, hand)) {
@@ -280,17 +266,15 @@ gofish(int askedfor, int player, int *hand)
 		printf("drew the guess!\n");
 		printplayer(player);
 		printf("get to ask again!\n");
-		return(1);
+		return (1);
 	}
-	return(0);
+	return (0);
 }
 
-static void
-goodmove(int player, int move, int *hand, int *opphand)
-{
+static void goodmove(int player, int move, int *hand, int *opphand) {
 	printplayer(OTHER(player));
-	printf("have %d %s%s.\n",
-	    opphand[move], cards[move], opphand[move] == 1 ? "": "'s");
+	printf("have %d %s%s.\n", opphand[move], cards[move],
+			opphand[move] == 1 ? "" : "'s");
 
 	hand[move] += opphand[move];
 	opphand[move] = 0;
@@ -307,9 +291,7 @@ goodmove(int player, int move, int *hand, int *opphand)
 	printf("get another guess!\n");
 }
 
-static void
-chkwinner(int player, int *hand)
-{
+static void chkwinner(int player, int *hand) {
 	int cb, i, ub;
 
 	for (i = 0; i < RANKS; ++i)
@@ -335,9 +317,7 @@ chkwinner(int player, int *hand)
 	exit(0);
 }
 
-static void
-printplayer(int player)
-{
+static void printplayer(int player) {
 	switch (player) {
 	case COMPUTER:
 		printf("I ");
@@ -348,9 +328,7 @@ printplayer(int player)
 	}
 }
 
-static void
-printhand(int *hand)
-{
+static void printhand(int *hand) {
 	int book, i, j;
 
 	for (book = i = 0; i < RANKS; i++)
@@ -368,19 +346,15 @@ printhand(int *hand)
 	putchar('\n');
 }
 
-static int
-countcards(int *hand)
-{
+static int countcards(int *hand) {
 	int i, count;
 
 	for (count = i = 0; i < RANKS; i++)
 		count += *hand++;
-	return(count);
+	return (count);
 }
 
-static int
-countbooks(int *hand)
-{
+static int countbooks(int *hand) {
 	int i, count;
 
 	for (count = i = 0; i < RANKS; i++)
@@ -391,12 +365,10 @@ countbooks(int *hand)
 	if (!count)
 		printf(" none");
 	putchar('\n');
-	return(count);
+	return (count);
 }
 
-static void
-init(void)
-{
+static void init(void) {
 	int i, rank;
 
 	for (i = 0; i < RANKS; ++i)
@@ -415,37 +387,33 @@ init(void)
 	}
 }
 
-static int
-nrandom(int n)
-{
+static int nrandom(int n) {
 
-	return((int)random() % n);
+	return ((int) random() % n);
 }
 
-static void
-instructions(void)
-{
+static void instructions(void) {
 	int input, status, pid;
-	const char * const argv[] = {PATH_PAGER, PATH_INSTR, NULL};
+	const char *const argv[] = { PATH_PAGER, PATH_INSTR, NULL };
 
 	printf("Would you like instructions (y or n)? ");
 	input = getchar();
-	while (getchar() != '\n');
+	while (getchar() != '\n')
+		;
 	if (input != 'y')
 		return;
 
 	status = posix_spawnp(&pid, PATH_PAGER, NULL, NULL,
-	    __DECONST(char * const *, argv), environ);
+			__DECONST(char * const *, argv), environ);
 	if (status != 0) {
-		printf("Unable to spawn %s\n",PATH_PAGER);
+		printf("Unable to spawn %s\n", PATH_PAGER);
 	}
 	printf("Hit return to continue...\n");
-	while ((input = getchar()) != EOF && input != '\n');
+	while ((input = getchar()) != EOF && input != '\n')
+		;
 }
 
-static void
-usage(void)
-{
+static void usage(void) {
 	fprintf(stderr, "usage: fish [-p]\n");
 	exit(1);
 }

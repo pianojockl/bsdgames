@@ -47,22 +47,19 @@
 int blklin = TRUE;
 
 int setbit[16] = { 1, 2, 4, 010, 020, 040, 0100, 0200, 0400, 01000, 02000,
-	04000, 010000, 020000, 040000, 0100000 };
+		04000, 010000, 020000, 040000, 0100000 };
 
-static void linkdata (void);
+static void linkdata(void);
 
 /* everything for 1st time run */
-void
-init(void)
-{
-	rdata();		/* read data from orig. file */
+void init(void) {
+	rdata(); /* read data from orig. file */
 	linkdata();
 	poof();
 }
 
-char *
-decr(const char *a, const char *b, const char *c, const char *d, const char *e)
-{
+char*
+decr(const char *a, const char *b, const char *c, const char *d, const char *e) {
 	static char buf[6];
 
 	buf[0] = a[0];
@@ -75,9 +72,7 @@ decr(const char *a, const char *b, const char *c, const char *d, const char *e)
 }
 
 /* secondary data manipulation */
-static void
-linkdata(void)
-{
+static void linkdata(void) {
 	int i, j;
 
 	/* array linkages */
@@ -107,67 +102,67 @@ linkdata(void)
 	}
 
 	/* define mnemonics */
-	keys  = vocab(DECR(k,e,y,s,\0), 1, 0);
-	lamp  = vocab(DECR(l,a,m,p,\0), 1, 0);
-	grate = vocab(DECR(g,r,a,t,e), 1, 0);
-	cage  = vocab(DECR(c,a,g,e,\0),1, 0);
-	rod   = vocab(DECR(r,o,d,\0,\0),1, 0);
+	keys = vocab(DECR(k, e, y, s, \0), 1, 0);
+	lamp = vocab(DECR(l, a, m, p, \0), 1, 0);
+	grate = vocab(DECR(g, r, a, t, e), 1, 0);
+	cage = vocab(DECR(c, a, g, e, \0), 1, 0);
+	rod = vocab(DECR(r, o, d, \0, \0), 1, 0);
 	rod2 = rod + 1;
-	steps = vocab(DECR(s,t,e,p,s),1, 0);
-	bird  = vocab(DECR(b,i,r,d,\0),1, 0);
-	door  = vocab(DECR(d,o,o,r,\0),1, 0);
-	pillow= vocab(DECR(p,i,l,l,o), 1, 0);
-	snake = vocab(DECR(s,n,a,k,e), 1, 0);
-	fissur= vocab(DECR(f,i,s,s,u), 1, 0);
-	tablet= vocab(DECR(t,a,b,l,e), 1, 0);
-	clam  = vocab(DECR(c,l,a,m,\0),1, 0);
-	oyster= vocab(DECR(o,y,s,t,e), 1, 0);
-	magzin= vocab(DECR(m,a,g,a,z), 1, 0);
-	dwarf = vocab(DECR(d,w,a,r,f), 1, 0);
-	knife = vocab(DECR(k,n,i,f,e), 1, 0);
-	food  = vocab(DECR(f,o,o,d,\0),1, 0);
-	bottle= vocab(DECR(b,o,t,t,l), 1, 0);
-	water = vocab(DECR(w,a,t,e,r), 1, 0);
-	oil   = vocab(DECR(o,i,l,\0,\0),1, 0);
-	plant = vocab(DECR(p,l,a,n,t), 1, 0);
+	steps = vocab(DECR(s, t, e, p, s), 1, 0);
+	bird = vocab(DECR(b, i, r, d, \0), 1, 0);
+	door = vocab(DECR(d, o, o, r, \0), 1, 0);
+	pillow = vocab(DECR(p, i, l, l, o), 1, 0);
+	snake = vocab(DECR(s, n, a, k, e), 1, 0);
+	fissur = vocab(DECR(f, i, s, s, u), 1, 0);
+	tablet = vocab(DECR(t, a, b, l, e), 1, 0);
+	clam = vocab(DECR(c, l, a, m, \0), 1, 0);
+	oyster = vocab(DECR(o, y, s, t, e), 1, 0);
+	magzin = vocab(DECR(m, a, g, a, z), 1, 0);
+	dwarf = vocab(DECR(d, w, a, r, f), 1, 0);
+	knife = vocab(DECR(k, n, i, f, e), 1, 0);
+	food = vocab(DECR(f, o, o, d, \0), 1, 0);
+	bottle = vocab(DECR(b, o, t, t, l), 1, 0);
+	water = vocab(DECR(w, a, t, e, r), 1, 0);
+	oil = vocab(DECR(o, i, l, \0, \0), 1, 0);
+	plant = vocab(DECR(p, l, a, n, t), 1, 0);
 	plant2 = plant + 1;
-	axe   = vocab(DECR(a,x,e,\0,\0), 1, 0);
-	mirror= vocab(DECR(m,i,r,r,o), 1, 0);
-	dragon= vocab(DECR(d,r,a,g,o), 1, 0);
-	chasm = vocab(DECR(c,h,a,s,m), 1, 0);
-	troll = vocab(DECR(t,r,o,l,l), 1, 0);
+	axe = vocab(DECR(a, x, e, \0, \0), 1, 0);
+	mirror = vocab(DECR(m, i, r, r, o), 1, 0);
+	dragon = vocab(DECR(d, r, a, g, o), 1, 0);
+	chasm = vocab(DECR(c, h, a, s, m), 1, 0);
+	troll = vocab(DECR(t, r, o, l, l), 1, 0);
 	troll2 = troll + 1;
-	bear  = vocab(DECR(b,e,a,r,\0),1, 0);
-	messag= vocab(DECR(m,e,s,s,a), 1, 0);
-	vend  = vocab(DECR(v,e,n,d,i), 1, 0);
-	batter= vocab(DECR(b,a,t,t,e), 1, 0);
+	bear = vocab(DECR(b, e, a, r, \0), 1, 0);
+	messag = vocab(DECR(m, e, s, s, a), 1, 0);
+	vend = vocab(DECR(v, e, n, d, i), 1, 0);
+	batter = vocab(DECR(b, a, t, t, e), 1, 0);
 
-	nugget= vocab(DECR(g,o,l,d,\0),1, 0);
-	coins = vocab(DECR(c,o,i,n,s), 1, 0);
-	chest = vocab(DECR(c,h,e,s,t), 1, 0);
-	eggs  = vocab(DECR(e,g,g,s,\0),1, 0);
-	tridnt= vocab(DECR(t,r,i,d,e), 1, 0);
-	vase  = vocab(DECR(v,a,s,e,\0),1, 0);
-	emrald= vocab(DECR(e,m,e,r,a), 1, 0);
-	pyram = vocab(DECR(p,y,r,a,m), 1, 0);
-	pearl = vocab(DECR(p,e,a,r,l), 1, 0);
-	rug   = vocab(DECR(r,u,g,\0,\0),1, 0);
-	chain = vocab(DECR(c,h,a,i,n), 1, 0);
+	nugget = vocab(DECR(g, o, l, d, \0), 1, 0);
+	coins = vocab(DECR(c, o, i, n, s), 1, 0);
+	chest = vocab(DECR(c, h, e, s, t), 1, 0);
+	eggs = vocab(DECR(e, g, g, s, \0), 1, 0);
+	tridnt = vocab(DECR(t, r, i, d, e), 1, 0);
+	vase = vocab(DECR(v, a, s, e, \0), 1, 0);
+	emrald = vocab(DECR(e, m, e, r, a), 1, 0);
+	pyram = vocab(DECR(p, y, r, a, m), 1, 0);
+	pearl = vocab(DECR(p, e, a, r, l), 1, 0);
+	rug = vocab(DECR(r, u, g, \0, \0), 1, 0);
+	chain = vocab(DECR(c, h, a, i, n), 1, 0);
 
-	back  = vocab(DECR(b,a,c,k,\0),0, 0);
-	look  = vocab(DECR(l,o,o,k,\0),0, 0);
-	cave  = vocab(DECR(c,a,v,e,\0),0, 0);
-	null  = vocab(DECR(n,u,l,l,\0),0, 0);
-	entrnc= vocab(DECR(e,n,t,r,a), 0, 0);
-	dprssn= vocab(DECR(d,e,p,r,e), 0, 0);
-	enter = vocab(DECR(e,n,t,e,r), 0, 0);
+	back = vocab(DECR(b, a, c, k, \0), 0, 0);
+	look = vocab(DECR(l, o, o, k, \0), 0, 0);
+	cave = vocab(DECR(c, a, v, e, \0), 0, 0);
+	null = vocab(DECR(n, u, l, l, \0), 0, 0);
+	entrnc = vocab(DECR(e, n, t, r, a), 0, 0);
+	dprssn = vocab(DECR(d, e, p, r, e), 0, 0);
+	enter = vocab(DECR(e, n, t, e, r), 0, 0);
 
-	pour  = vocab(DECR(p,o,u,r,\0), 2, 0);
-	say   = vocab(DECR(s,a,y,\0,\0),2, 0);
-	lock  = vocab(DECR(l,o,c,k,\0),2, 0);
-	throw = vocab(DECR(t,h,r,o,w), 2, 0);
-	find  = vocab(DECR(f,i,n,d,\0),2, 0);
-	invent= vocab(DECR(i,n,v,e,n), 2, 0);
+	pour = vocab(DECR(p, o, u, r, \0), 2, 0);
+	say = vocab(DECR(s, a, y, \0, \0), 2, 0);
+	lock = vocab(DECR(l, o, c, k, \0), 2, 0);
+	throw = vocab(DECR(t, h, r, o, w), 2, 0);
+	find = vocab(DECR(f, i, n, d, \0), 2, 0);
+	invent = vocab(DECR(i, n, v, e, n), 2, 0);
 
 	/* initialize dwarves */
 	chloc = 114;
@@ -200,17 +195,21 @@ linkdata(void)
 	closng = panic = closed = scorng = FALSE;
 }
 
+#ifdef __FreeBSD__
 /* come here if he hits a del */
-void
-trapdel(int sig __unused)
+void trapdel(int sig __unused)
 {
-	delhit = 1;			/* main checks, treats as QUIT */
-	signal(SIGINT, trapdel);	/* catch subsequent DELs */
+	delhit = 1; /* main checks, treats as QUIT */
+	signal(SIGINT, trapdel); /* catch subsequent DELs */
 }
+#else
+void trapdel(int sig) {
+	delhit = 1; /* main checks, treats as QUIT */
+	signal(SIGINT, trapdel); /* catch subsequent DELs */
+	}
+#endif
 
-void
-startup(void)
-{
+void startup(void) {
 	demo = Start();
 	srandomdev();
 	hinted[3] = yes(65, 1, 0);
@@ -218,5 +217,5 @@ startup(void)
 	delhit = 0;
 	limit = 330;
 	if (hinted[3])
-		limit = 1000;	/* better batteries if instrucs */
+		limit = 1000; /* better batteries if instrucs */
 }

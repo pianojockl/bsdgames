@@ -35,6 +35,43 @@
 * rogue
 * trek
 
+## Make games linux- and FreeBSD-compatible
+ 
+* adventure
+* arithmetic
+* atc
+* backgammon
+* battlestar
+* bcd (done)
+* boggle
+* bs
+* canfield
+* caesar (done)
+* colorbars
+* cribbage
+* fish
+* hack
+* hals_end
+* hangman
+* hunt
+* larn
+* mille
+* phantasia
+* pig
+* ppt
+* quiz
+* rain
+* robots
+* rogue
+* sail
+* snake
+* tetris
+* trek
+* wargames
+* worm
+* worms
+* wump
+
 ## CONTRIBUTORS ##
 
 * bring AUTHORS up to date
@@ -54,3 +91,5 @@
 ## Look into man pages... ##
 
 ## Write a bsdgames man page ##
+ 
+

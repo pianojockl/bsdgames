@@ -60,9 +60,7 @@
 
 #define LINE 10		/* How many values do we get on a line? */
 
-int
-main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	FILE *infile;
 	int c, count, linestart;
 
@@ -82,11 +80,12 @@ main(int argc, char **argv)
 	linestart = YES;
 
 	while ((c = getc(infile)) != EOF) {
-		if (linestart && c == ' ') {	/* Convert first spaces to tab */
+		if (linestart && c == ' ') { /* Convert first spaces to tab */
 			if (count++ % LINE == 0)
 				printf("\n\t");
 			printf("0x%02lx,", ('\t' ^ random()) & 0xFF);
-			while ((c = getc(infile)) == ' ' && c != EOF);
+			while ((c = getc(infile)) == ' ' && c != EOF)
+				;
 			/* Drop the non-whitespace character through */
 			linestart = NO;
 		}

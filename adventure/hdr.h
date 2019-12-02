@@ -55,6 +55,9 @@
 /* hdr.h: included by c advent files */
 #include <sys/types.h>
 #include <signal.h>
+#ifndef __FreeBSD__
+	#include <bsd/sys/cdefs.h>
+#endif
 
 extern int datfd;			/* message file descriptor */
 extern volatile sig_atomic_t delhit;

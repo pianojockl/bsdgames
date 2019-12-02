@@ -59,15 +59,11 @@
  * letter frequencies (taken from some unix(tm) documentation)
  * (unix is a trademark of Bell Laboratories)
  */
-static double stdf[LETTERS] = {
-	7.97, 1.35, 3.61, 4.78, 12.37, 2.01, 1.46, 4.49, 6.39, 0.04,
-	0.42, 3.81, 2.69, 5.92,  6.96, 2.91, 0.08, 6.63, 8.77, 9.68,
-	2.62, 0.81, 1.88, 0.23,  2.07, 0.06
-};
+static double stdf[LETTERS] = { 7.97, 1.35, 3.61, 4.78, 12.37, 2.01, 1.46, 4.49,
+		6.39, 0.04, 0.42, 3.81, 2.69, 5.92, 6.96, 2.91, 0.08, 6.63, 8.77, 9.68,
+		2.62, 0.81, 1.88, 0.23, 2.07, 0.06 };
 
-static void
-printit(const char *arg)
-{
+static void printit(const char *arg) {
 	int ch, rot;
 
 	if ((rot = atoi(arg)) < 0)
@@ -78,9 +74,7 @@ printit(const char *arg)
 	exit(0);
 }
 
-int
-main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	int ch, dot, i, nread, winnerdot;
 	char *inbuf;
 	int obs[LETTERS], try, winner;
@@ -95,9 +89,9 @@ main(int argc, char *argv[])
 		err(1, "malloc failed");
 
 	/* adjust frequency table to weight low probs REAL low */
-	for (i = 0; i < LETTERS; i++)
+	for (i = 0; i < LETTERS; i++) {
 		stdf[i] = log(stdf[i]) + log(LETTERS / 100.0);
-
+	}
 	/* zero out observation table */
 	bzero(obs, LETTERS * sizeof(int));
 
