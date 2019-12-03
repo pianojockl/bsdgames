@@ -211,7 +211,9 @@ void trapdel(int sig) {
 
 void startup(void) {
 	demo = Start();
+#ifdef __FreeBSD__
 	srandomdev();
+#endif
 	hinted[3] = yes(65, 1, 0);
 	newloc = 1;
 	delhit = 0;
