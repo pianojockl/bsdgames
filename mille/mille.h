@@ -147,6 +147,8 @@
 #define	EXTENSIONPROMPT		7
 #define	OVERWRITEFILEPROMPT	8
 
+#define NCURSES_INTERNALS	1
+
 #define	erasechar()	cur_term->Nttyb.c_cc[VERASE]
 #define	killchar()	cur_term->Nttyb.c_cc[VKILL]
 
