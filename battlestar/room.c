@@ -50,7 +50,7 @@ writedes()
 					putchar(c);
 			} else {
 				if (c != '*')
-					printf(truedirec(compass, c));
+					printf("%s", truedirec(compass, c));
 				compass++;
 			}
 	}
@@ -106,9 +106,7 @@ whichway(here)
 }
 
 const char   *
-truedirec(way, option)
-	int     way;
-	char    option;
+truedirec(int way, char option)
 {
 	switch (way) {
 

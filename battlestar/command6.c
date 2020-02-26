@@ -106,8 +106,7 @@ open_score_file()
 }
 
 void
-post(ch)
-	char    ch;
+post(char ch)
 {
 	time_t tv;
 	char   *date;
