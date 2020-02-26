@@ -1,4 +1,6 @@
-/*-
+/*	$NetBSD: command6.c,v 1.2 2003/08/07 09:37:01 agc Exp $	*/
+
+/*
  * Copyright (c) 1983, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -25,201 +27,236 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * @(#)com6.c	8.1 (Berkeley) 5/31/93
- * $FreeBSD: src/games/battlestar/com6.c,v 1.9.2.1 2001/03/05 11:45:35 kris Exp $
- * $DragonFly: src/games/battlestar/com6.c,v 1.4 2006/08/08 16:47:20 pavalos Exp $
  */
 
-#include <signal.h>
-#include <sys/time.h>
-#include "externs.h"
+#include <sys/cdefs.h>
+#include "extern.h"
 #include "pathnames.h"
 
+int
+launch()
+{
+	if (testbit(location[position].objects, VIPER) && !notes[CANTLAUNCH]) {
+		if (fuel > 4) {
+			clearbit(location[position].objects, VIPER);
+			position = location[position].up;
+			notes[LAUNCHED] = 1;
+			ourtime++;
+			fuel -= 4;
+			puts("You climb into the viper and prepare for launch.");
+			puts("With a touch of your thumb the turbo engines ignite, thrusting you back into\nyour seat.");
+			return (1);
+		} else
+			puts("Not enough fuel to launch.");
+	} else
+		puts("Can't launch.");
+	return (0);
+}
+
+int
+land()
+{
+	if (notes[LAUNCHED] && testbit(location[position].objects, LAND) &&
+	    location[position].down) {
+		notes[LAUNCHED] = 0;
+		position = location[position].down;
+		setbit(location[position].objects, VIPER);
+		fuel -= 2;
+		ourtime++;
+		puts("You are down.");
+		return (1);
+	} else
+		puts("You can't land here.");
+	return (0);
+}
+
+void
+die()
+{				/* endgame */
+	printf("bye.\nYour rating was %s.\n", rate());
+	post(' ');
+	exit(0);
+}
+
+void
+diesig(dummy)
+	int     dummy __attribute__((__unused__));
+{
+	die();
+}
+
+void
+live()
+{
+	puts("\nYou win!");
+	post('!');
+	exit(0);
+}
+
 static FILE *score_fp;
-static void post(unsigned int ch);
 
-int
-launch(void)
+void
+open_score_file()
 {
-    if (testbit(location[position].objects, VIPER) && !notes[CANTLAUNCH]) {
-        if (fuel > 4) {
-            clearbit(location[position].objects, VIPER);
-            position = location[position].up;
-            notes[LAUNCHED] = 1;
-            gtime++;
-            fuel -= 4;
-            puts("You climb into the viper and prepare for launch.");
-            puts("With a touch of your thumb the turbo engines ignite, thrusting you back into\nyour seat.");
-            return (1);
-        } else
-            puts("Not enough fuel to launch.");
-    } else
-        puts("Can't launch.");
-    return (0);
-}
-
-int
-land(void)
-{
-    if (notes[LAUNCHED] && testbit(location[position].objects, LAND) &&
-            location[position].down) {
-        notes[LAUNCHED] = 0;
-        position = location[position].down;
-        setbit(location[position].objects, VIPER);
-        fuel -= 2;
-        gtime++;
-        puts("You are down.");
-        return (1);
-    } else
-        puts("You can't land here.");
-    return (0);
+	score_fp = fopen(_PATH_SCORE, "a");
+	if (score_fp == NULL && getenv("BATTLESTAR_QUIET") == NULL)
+		warn("open %s for append", _PATH_SCORE);
+	if (score_fp != NULL && fileno(score_fp) < 3)
+		exit(1);
 }
 
 void
-die(int sig __unused)    /* endgame */
+post(ch)
+	char    ch;
 {
-    printf("bye.\nYour rating was %s.\n", rate());
-    post(' ');
-    exit(0);
+	time_t tv;
+	char   *date;
+	sigset_t sigset, osigset;
+
+	sigemptyset(&sigset);
+	sigaddset(&sigset, SIGINT);
+	sigprocmask(SIG_BLOCK, &sigset, &osigset);
+	tv = time(NULL);
+	date = ctime(&tv);
+	date[24] = '\0';
+	if (score_fp != NULL) {
+		fprintf(score_fp, "%s  %8s  %c%20s", date, username, ch, rate());
+		if (wiz)
+			fprintf(score_fp, "   wizard\n");
+		else
+			if (tempwiz)
+				fprintf(score_fp, "   WIZARD!\n");
+			else
+				fprintf(score_fp, "\n");
+	}
+	sigprocmask(SIG_SETMASK, &osigset, (sigset_t *) 0);
 }
 
-void
-live(void)
+const char   *
+rate()
 {
-    puts("\nYou win!");
-    post('!');
-    exit(0);
-}
+	int     score;
 
-void
-open_score_file(void)
-{
-    if ((score_fp = fopen(_PATH_SCORE, "a")) == NULL)
-        perror(_PATH_SCORE);
-}
-
-static void
-post(unsigned int ch)
-{
-    struct timeval tv;
-    char *date;
-    time_t tvsec;
-    int s;
-
-    if (score_fp == NULL)
-        return;
-
-    s = sigblock(sigmask(SIGINT));
-
-    gettimeofday(&tv, NULL);        /* can't call time */
-    tvsec = (time_t)tv.tv_sec;
-    date = ctime(&tvsec);
-    date[24] = '\0';
-
-    fprintf(score_fp, "%s  %8s  %c%20s", date, uname, ch, rate());
-    if (wiz)
-        fprintf(score_fp, "   wizard\n");
-    else if (tempwiz)
-        fprintf(score_fp, "   WIZARD!\n");
-    else
-        fprintf(score_fp, "\n");
-
-    sigsetmask(s);
-}
-
-const char *
-rate(void)
-{
-    int score;
-
-    score = max(max(pleasure, power), ego);
-    if (score == pleasure) {
-        if (score < 5)
-            return ("novice");
-        else if (score < 20)
-            return ("junior voyeur");
-        else if (score < 35)
-            return ("Don Juan");
-        else
-            return ("Marquis De Sade");
-    } else if (score == power) {
-        if (score < 5)
-            return ("serf");
-        else if (score < 8)
-            return ("Samurai");
-        else if (score < 13)
-            return ("Klingon");
-        else if (score < 22)
-            return ("Darth Vader");
-        else
-            return ("Sauron the Great");
-    } else {
-        if (score < 5)
-            return ("Polyanna");
-        else if (score < 10)
-            return ("philanthropist");
-        else if (score < 20)
-            return ("Tattoo");
-        else
-            return ("Mr. Roarke");
-    }
+	score = max(max(pleasure, power), ego);
+	if (score == pleasure) {
+		if (score < 5)
+			return ("novice");
+		else if (score < 20)
+			return ("junior voyeur");
+		else if (score < 35)
+			return ("Don Juan");
+		else
+			return ("Marquis De Sade");
+	} else if (score == power) {
+		if (score < 5)
+			return ("serf");
+		else if (score < 8)
+			return ("Samurai");
+		else if (score < 13)
+			return ("Klingon");
+		else if (score < 22)
+			return ("Darth Vader");
+		else
+			return ("Sauron the Great");
+	} else {
+		if (score < 5)
+			return ("Polyanna");
+		else if (score < 10)
+			return ("philanthropist");
+		else if (score < 20)
+			return ("Tattoo");
+		else
+			return ("Mr. Roarke");
+	}
 }
 
 int
-drive(void)
+drive()
 {
-    if (testbit(location[position].objects, CAR)) {
-        puts("You hop in the car and turn the key.  There is a perceptible grating noise,");
-        puts("and an explosion knocks you unconscious...");
-        clearbit(location[position].objects, CAR);
-        setbit(location[position].objects, CRASH);
-        injuries[5] = injuries[6] = injuries[7] = injuries[8] = 1;
-        gtime += 15;
-        zzz();
-        return (0);
-    } else
-        puts("There is nothing to drive here.");
-    return (-1);
+	if (testbit(location[position].objects, CAR)) {
+		puts("You hop in the car and turn the key.  There is a perceptible grating noise,");
+		puts("and an explosion knocks you unconscious...");
+		clearbit(location[position].objects, CAR);
+		setbit(location[position].objects, CRASH);
+		injuries[5] = injuries[6] = injuries[7] = injuries[8] = 1;
+		ourtime += 15;
+		zzz();
+		return (0);
+	} else
+		puts("There is nothing to drive here.");
+	return (-1);
 }
 
 int
-ride(void)
+ride()
 {
-    if (testbit(location[position].objects, HORSE)) {
-        puts("You climb onto the stallion and kick it in the guts.  The stupid steed launches");
-        puts("forward through bush and fern.  You are thrown and the horse gallups off.");
-        clearbit(location[position].objects, HORSE);
-        while (!(position = rnd(NUMOFROOMS + 1)) || !OUTSIDE ||
-                !beenthere[position] || location[position].flyhere)
-            ; /* nothing */
-        setbit(location[position].objects, HORSE);
-        if (location[position].north)
-            position = location[position].north;
-        else if (location[position].south)
-            position = location[position].south;
-        else if (location[position].east)
-            position = location[position].east;
-        else
-            position = location[position].west;
-        return (0);
-    } else
-        puts("There is no horse here.");
-    return (-1);
+	if (testbit(location[position].objects, HORSE)) {
+		puts("You climb onto the stallion and kick it in the guts.  The stupid steed launches");
+		puts("forward through bush and fern.  You are thrown and the horse gallops off.");
+		clearbit(location[position].objects, HORSE);
+		while (!(position = rnd(NUMOFROOMS + 1)) || !OUTSIDE || !beenthere[position] || location[position].flyhere)
+			continue;
+		setbit(location[position].objects, HORSE);
+		if (location[position].north)
+			position = location[position].north;
+		else if (location[position].south)
+			position = location[position].south;
+		else if (location[position].east)
+			position = location[position].east;
+		else
+			position = location[position].west;
+		return (0);
+	} else
+		puts("There is no horse here.");
+	return (-1);
 }
 
 void
-light(void)     /* synonyms = {strike, smoke} */
-{   /* for matches, cigars */
-    if (testbit(inven, MATCHES) && matchcount) {
-        puts("Your match splutters to life.");
-        gtime++;
-        matchlight = 1;
-        matchcount--;
-        if (position == 217) {
-            puts("The whole bungalow explodes with an intense blast.");
-            die(0);
-        }
-    } else
-        puts("You're out of matches.");
+light()
+{				/* synonyms = {strike, smoke} *//* for
+				 * matches, cigars */
+	if (testbit(inven, MATCHES) && matchcount) {
+		puts("Your match splutters to life.");
+		ourtime++;
+		matchlight = 1;
+		matchcount--;
+		if (position == 217) {
+			puts("The whole bungalow explodes with an intense blast.");
+			die();
+		}
+	} else
+		puts("You're out of matches.");
+}
+
+void
+dooropen()
+{				/* synonyms = {open, unlock} */
+	wordnumber++;
+	if (wordnumber <= wordcount && wordtype[wordnumber] == NOUNS
+	    && wordvalue[wordnumber] == DOOR) {
+		switch(position) {
+		case 189:
+		case 231:
+			if (location[189].north == 231)
+				puts("The door is already open.");
+			else
+				puts("The door does not budge.");
+			break;
+		case 30:
+			if (location[30].west == 25)
+				puts("The door is gone.");
+			else
+				puts("The door is locked tight.");
+			break;
+		case 31:
+			puts("That's one immovable door.");
+			break;
+		case 20:
+			puts("The door is already ajar.");
+			break;
+		default:
+			puts("What door?");
+		}
+	} else
+		puts("That doesn't open.");
 }

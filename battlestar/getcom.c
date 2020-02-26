@@ -1,4 +1,6 @@
-/*-
+/*	$NetBSD: getcom.c,v 1.12 2004/11/05 21:30:31 dsl Exp $	*/
+
+/*
  * Copyright (c) 1983, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -25,32 +27,39 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * @(#)getcom.c	8.1 (Berkeley) 5/31/93
- * $FreeBSD: src/games/battlestar/getcom.c,v 1.6.2.1 2001/03/05 11:45:36 kris Exp $
- * $DragonFly: src/games/battlestar/getcom.c,v 1.3 2006/08/08 16:47:20 pavalos Exp $
  */
 
-#include <ctype.h>
-#include "externs.h"
+#include <sys/cdefs.h>
+#include "extern.h"
 
-char *
-getcom(char *buf, int size, const char *prompt, const char *error)
+char   *
+getcom(buf, size, prompt, error)
+	char   *buf;
+	int     size;
+	const char   *prompt, *error;
 {
-    for (;;) {
-        fputs(prompt, stdout);
-        if (fgets(buf, size, stdin) == 0) {
-            clearerr(stdin);
-            continue;
-        }
-        while (isspace(*buf))
-            buf++;
-        if (*buf)
-            break;
-        if (error)
-            puts(error);
-    }
-    return (buf);
+	for (;;) {
+		fputs(prompt, stdout);
+		if (fgets(buf, size, stdin) == 0) {
+			if (feof(stdin))
+				die();
+			clearerr(stdin);
+			continue;
+		}
+		while (isspace((unsigned char)*buf))
+			buf++;
+		if (*buf)
+			break;
+		if (error)
+			puts(error);
+	}
+	/* If we didn't get to the end of the line, don't read it in next time. */
+	if (buf[strlen(buf) - 1] != '\n') {
+		int i;
+		while ((i = getchar()) != '\n' && i != EOF)
+			continue;
+	}
+	return (buf);
 }
 
 
@@ -58,34 +67,49 @@ getcom(char *buf, int size, const char *prompt, const char *error)
  * shifts to UPPERCASE if flag > 0, lowercase if flag < 0,
  * and leaves it unchanged if flag = 0
  */
-char *
-getword(char *buf1, char *buf2, int flag)
+char   *
+getword(buf1, buf2, flag)
+	char   *buf1, *buf2;
+	int     flag;
 {
-    while (isspace(*buf1))
-        buf1++;
-    if (*buf1 != ',') {
-        if (!*buf1) {
-            *buf2 = 0;
-            return (0);
-        }
-        while (*buf1 && !isspace(*buf1) && *buf1 != ',')
-            if (flag < 0) {
-                if (isupper(*buf1))
-                    *buf2++ = tolower(*buf1++);
-                else
-                    *buf2++ = *buf1++;
-            } else if (flag > 0) {
-                if (islower(*buf1))
-                    *buf2++ = toupper(*buf1++);
-                else
-                    *buf2++ = *buf1++;
-            } else {
-                *buf2++ = *buf1++;
-            }
-    } else
-        *buf2++ = *buf1++;
-    *buf2 = 0;
-    while (isspace(*buf1))
-        buf1++;
-    return (*buf1 ? buf1 : NULL);
+	int cnt;
+
+	cnt = 1;
+	while (isspace((unsigned char)*buf1))
+		buf1++;
+	if (*buf1 != ',') {
+		if (!*buf1) {
+			*buf2 = 0;
+			return (0);
+		}
+		while (cnt < WORDLEN && *buf1 && !isspace((unsigned char)*buf1) && *buf1 != ',')
+			if (flag < 0) {
+				if (isupper((unsigned char)*buf1)) {
+					*buf2++ = tolower((unsigned char)*buf1++);
+					cnt++;
+				} else {
+					*buf2++ = *buf1++;
+					cnt++;
+				}
+			} else if (flag > 0) {
+				if (islower((unsigned char)*buf1)) {
+					*buf2++ = toupper((unsigned char)*buf1++);
+					cnt++;
+				} else {
+					*buf2++ = *buf1++;
+					cnt++;
+				}
+			} else {
+				*buf2++ = *buf1++;
+				cnt++;
+			}
+		if (cnt == WORDLEN)
+			while (*buf1 && !isspace((unsigned char)*buf1))
+				buf1++;
+	} else
+		*buf2++ = *buf1++;
+	*buf2 = '\0';
+	while (isspace((unsigned char)*buf1))
+		buf1++;
+	return (*buf1 ? buf1 : NULL);
 }

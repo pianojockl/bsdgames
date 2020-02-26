@@ -19,6 +19,26 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifndef __printflike
+/*
+ * Compiler-dependent macros to declare that functions take printf-like
+ * or scanf-like arguments.  They are null except for versions of gcc
+ * that are known to support the features properly (old versions of gcc-2
+ * didn't permit keeping the keywords out of the application namespace).
+ */
+#  if __GNUC_PREREQ(2, 7)
+#    define __printflike(fmtarg, firstvararg)       \
+            __attribute__((__format__ (__printf__, fmtarg, firstvararg)))
+#    define __scanflike(fmtarg, firstvararg)        \
+            __attribute__((__format__ (__scanf__, fmtarg, firstvararg)))
+#    define __format_arg(fmtarg)    __attribute__((__format_arg__ (fmtarg)))
+#  else
+#    define __printflike(fmtarg, firstvararg)       /* nothing */
+#    define __scanflike(fmtarg, firstvararg)        /* nothing */
+#    define __format_arg(fmtarg)                    /* nothing */
+#  endif
+#endif
+
 /*
  * Constants for tuning the random-fire algorithm. It prefers moves that
  * diagonal-stripe the board with a stripe separation of srchstep. If
@@ -124,9 +144,7 @@ static int salvo, blitz, closepack;
 
 #define	PR	addstr
 
-static void prompt(int, const char*, ...) {
-	__printflike(2, 3);
-}
+static void prompt(int, const char*, ...) __printflike(2, 3);
 static bool checkplace(int, ship_t*, int);
 static int getcoord(int);
 int playagain(void);
@@ -170,7 +188,9 @@ static void announceopts(void) {
 static void intro(void) {
 	char *tmpname;
 
-	srandomdev();
+	#ifdef __FreeBSD__
+		srandomdev();
+	#endif /* __FreeBSD__ */
 
 	tmpname = getlogin();
 	signal(SIGINT, sighandler);

@@ -1,4 +1,6 @@
-/*-
+/*	$NetBSD: misc.c,v 1.8 2003/08/07 09:37:02 agc Exp $	*/
+
+/*
  * Copyright (c) 1983, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -25,36 +27,33 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * @(#)misc.c	8.1 (Berkeley) 5/31/93
- * $FreeBSD: src/games/battlestar/misc.c,v 1.5 1999/11/30 03:48:38 billf Exp $
- * $DragonFly: src/games/battlestar/misc.c,v 1.3 2006/08/08 16:47:20 pavalos Exp $
  */
 
-#include "externs.h"
+#include <sys/cdefs.h>
+#include "extern.h"
 
 int
-card(const char *array, int size)	/* for beenthere, injuries */
+card(array, size)		/* for beenthere, injuries */
+	const char   *array;
+	int     size;
 {
-    const char *end;
-    int i;
+	const char   *end = array + size;
+	int     i = 0;
 
-    i = 0;
-    end = array + size;
-    while (array < end)
-        if (*array++)
-            i++;
-    return (i);
+	while (array < end)
+		if (*array++)
+			i++;
+	return (i);
 }
 
 int
-ucard(const unsigned int *array)
+ucard(array)
+	const unsigned int *array;
 {
-    int j, n;
+	int     j = 0, n;
 
-    j = 0;
-    for (n = 0; n < NUMOFOBJECTS; n++)
-        if (testbit(array, n))
-            j++;
-    return (j);
+	for (n = 0; n < NUMOFOBJECTS; n++)
+		if (testbit(array, n))
+			j++;
+	return (j);
 }

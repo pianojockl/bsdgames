@@ -1,4 +1,6 @@
-/*-
+/*	$NetBSD: init.c,v 1.14 2004/01/27 20:30:29 jsm Exp $	*/
+
+/*
  * Copyright (c) 1983, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -25,107 +27,111 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * @(#)init.c	8.1 (Berkeley) 5/31/93
- * $FreeBSD: src/games/battlestar/init.c,v 1.7.2.1 2001/03/05 11:45:36 kris Exp $
- * $DragonFly: src/games/battlestar/init.c,v 1.4 2006/08/08 16:47:20 pavalos Exp $
  */
 
-#include <pwd.h>
-#include "externs.h"
+#include <sys/cdefs.h>
+#include "extern.h"
 
 static int checkout(const char *);
-static void getutmp(char *);
+static const char *getutmp(void);
 static int wizard(const char *);
 
 void
-initialize(int startup)
+initialize(filename)
+	const char   *filename;
 {
-    const struct objs *p;
+	const struct objs *p;
+	char *savefile;
 
-    puts("Version 4.2, fall 1984.");
-    puts("First Adventure game written by His Lordship, the honorable");
-    puts("Admiral D.W. Riggle\n");
-    srandomdev();
-    getutmp(uname);
-    if (startup)
-        location = dayfile;
-    wiz = wizard(uname);
-    wordinit();
-    if (startup) {
-        direction = NORTH;
-        gtime = 0;
-        snooze = CYCLE * 1.5;
-        position = 22;
-        setbit(wear, PAJAMAS);
-        fuel = TANKFULL;
-        torps = TORPEDOES;
-        for (p = dayobjs; p->room != 0; p++)
-            setbit(location[p->room].objects, p->obj);
-    } else
-        restore();
-    signal(SIGINT, die);
+	puts("Version 4.2, fall 1984.");
+	puts("First Adventure game written by His Lordship, the honorable");
+	puts("Admiral D.W. Riggle\n");
+	location = dayfile;
+	srand(getpid());
+	username = getutmp();
+	wordinit();
+	if (filename == NULL) {
+		direction = NORTH;
+		ourtime = 0;
+		snooze = CYCLE * 1.5;
+		position = 22;
+		setbit(wear, PAJAMAS);
+		fuel = TANKFULL;
+		torps = TORPEDOES;
+		for (p = dayobjs; p->room != 0; p++)
+			setbit(location[p->room].objects, p->obj);
+	} else {
+		savefile = save_file_name(filename, strlen(filename));
+		restore(savefile);
+		free(savefile);
+	}
+	wiz = wizard(username);
+	signal(SIGINT, diesig);
 }
 
-static void
-getutmp(char *battlestar_uname)
+static const char *
+getutmp()
 {
-    struct passwd *ptr;
+	struct passwd *ptr;
 
-    ptr = getpwuid(getuid());
-    strcpy(battlestar_uname, ptr ? ptr->pw_name : "");
+	ptr = getpwuid(getuid());
+	if (ptr == NULL)
+		return "";
+	else
+		return strdup(ptr->pw_name);
 }
 
-const char *const list[] = {	/* hereditary wizards */
-    "riggle",
-    "chris",
-    "edward",
-    "comay",
-    "yee",
-    "dmr",
-    "ken",
-    0
+/* Hereditary wizards.  A configuration file might make more sense. */
+static const char *const list[] = {
+	"riggle",
+	"chris",
+	"edward",
+	"comay",
+	"yee",
+	"dmr",
+	"ken",
+	0
 };
 
-const char *const badguys[] = {
-    "wnj",
-    "root",
-    "ted",
-    0
+static const char *const badguys[] = {
+	"wnj",
+	"root",
+	"ted",
+	0
 };
 
 static int
-wizard(const char *battlestar_uname)
+wizard(uname)
+	const char   *uname;
 {
-    char flag;
+	int     flag;
 
-    if ((flag = checkout(battlestar_uname)) > 0)
-        printf("You are the Great wizard %s.\n", battlestar_uname);
-    return flag;
+	if ((flag = checkout(uname)) != 0)
+		printf("You are the Great wizard %s.\n", uname);
+	return flag;
 }
 
 static int
-checkout(const char *battlestar_uname)
+checkout(uname)
+	const char   *uname;
 {
-    const char *const *ptr;
+	const char  *const *ptr;
 
-    for (ptr = list; *ptr; ptr++)
-        if (strcmp(*ptr, battlestar_uname) == 0)
-            return 1;
-    for (ptr = badguys; *ptr; ptr++)
-        if (strcmp(*ptr, battlestar_uname) == 0) {
-            printf("You are the Poor anti-wizard %s.  Good Luck!\n",
-                   battlestar_uname);
-            if (location != NULL) {
-                CUMBER = 3;
-                WEIGHT = 9;     /* that'll get him! */
-                gclock = 10;
-                setbit(location[7].objects, WOODSMAN);  /* viper room */
-                setbit(location[20].objects, WOODSMAN); /* laser " */
-                setbit(location[13].objects, DARK);     /* amulet " */
-                setbit(location[8].objects, ELF);       /* closet */
-            }
-            return 0;	/* anything else, Chris? */
-        }
-    return 0;
+	for (ptr = list; *ptr; ptr++)
+		if (strcmp(*ptr, uname) == 0)
+			return 1;
+	for (ptr = badguys; *ptr; ptr++)
+		if (strcmp(*ptr, uname) == 0) {
+			printf("You are the Poor anti-wizard %s.  Good Luck!\n",
+			    uname);
+			CUMBER = 3;
+			WEIGHT = 9;	/* that'll get him! */
+			ourclock = 10;
+			setbit(location[7].objects, WOODSMAN);	/* viper room */
+			setbit(location[20].objects, WOODSMAN);	/* laser " */
+			setbit(location[13].objects, DARK);	/* amulet " */
+			setbit(location[8].objects, ELF);	/* closet */
+			return 0;	/* anything else, Chris? */
+		}
+	return 0;
 }
