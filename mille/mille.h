@@ -149,8 +149,8 @@
 
 #define NCURSES_INTERNALS	1
 
-#define	erasechar()	cur_term->Nttyb.c_cc[VERASE]
-#define	killchar()	cur_term->Nttyb.c_cc[VKILL]
+#define	erasechar	(char) 127
+#define	killchar	(char) 21
 
 typedef struct {
 	bool	coups[NUM_SAFE];

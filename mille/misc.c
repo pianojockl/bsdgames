@@ -70,7 +70,7 @@ getcard(void)
 			continue;
 		if (islower(c))
 			c = toupper(c);
-		if (c == killchar() || c == erasechar())
+		if (c == killchar || c == erasechar)
 			return -1;
 		addstr(unctrl(c));
 		clrtoeol();
@@ -93,9 +93,9 @@ getcard(void)
 		refresh();
 		if (c >= 0) {
 			while ((c1=readch()) != '\r' && c1 != '\n' && c1 != ' ')
-				if (c1 == killchar())
+				if (c1 == killchar)
 					return -1;
-				else if (c1 == erasechar()) {
+				else if (c1 == erasechar) {
 					addch('\b');
 					clrtoeol();
 					refresh();

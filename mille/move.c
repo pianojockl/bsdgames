@@ -356,7 +356,7 @@ getmove(void)
 		prompt(MOVEPROMPT);
 		leaveok(Board, FALSE);
 		refresh();
-		while ((c = readch()) == killchar() || c == erasechar())
+		while ((c = readch()) == killchar || c == erasechar)
 			continue;
 		if (islower(c))
 			c = toupper(c);
@@ -434,9 +434,9 @@ getmove(void)
 				refresh();
 				sp = buf;
 				while ((*sp = readch()) != '\n') {
-					if (*sp == killchar())
+					if (*sp == killchar)
 						goto over;
-					else if (*sp == erasechar()) {
+					else if (*sp == erasechar) {
 						if (--sp < buf)
 							sp = buf;
 						else {
