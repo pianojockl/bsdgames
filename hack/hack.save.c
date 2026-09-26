@@ -2,6 +2,8 @@
 /* hack.save.c - version 1.0.3 */
 /* $FreeBSD: src/games/hack/hack.save.c,v 1.4 1999/11/16 10:26:37 marcel Exp $ */
 
+#include <stdint.h>
+
 #include "hack.h"
 
 extern char SAVEF[], nul[];
@@ -95,6 +97,7 @@ dorecover(int fd)
 	int tmp;		/* not a ! */
 	unsigned mid;		/* idem */
 	struct obj *otmp;
+	struct prop *upp;
 
 	restoring = TRUE;
 	getlev(fd, 0, 0);
@@ -123,6 +126,18 @@ dorecover(int fd)
 	mread(fd, (char *)genocided, sizeof(genocided));
 	mread(fd, (char *)fut_geno, sizeof(fut_geno));
 	restnames(fd);
+	/*
+	 * The pointers kept inside 'u' refer to this program's image too
+	 * (the name of what made us sick, and the levitation timeout
+	 * function), so relocate them by the same shift as the names.
+	 */
+	if (u.usick_cause)
+		u.usick_cause =
+		    (const char *)((intptr_t)u.usick_cause + image_differ);
+	for (upp = u.uprops; upp < u.uprops + SIZE(u.uprops); upp++)
+		if (upp->p_tofn)
+			upp->p_tofn = (void (*)(void))
+			    ((intptr_t)upp->p_tofn + image_differ);
 	for (;;) {
 		if (read(fd, (char *)&tmp, sizeof(tmp)) != sizeof(tmp))
 			break;
@@ -211,6 +226,7 @@ restmonchn(int fd)
 
 	mread(fd, (char *)&monbegin, sizeof(monbegin));
 	differ = (char *)(&mons[0]) - (char *)(monbegin);
+	image_differ = differ;	/* also used for the other image pointers */
 
 	/* suppress "used before set" warning from lint */
 	mtmp2 = NULL;

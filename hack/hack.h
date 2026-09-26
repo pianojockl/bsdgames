@@ -140,6 +140,7 @@ extern const char *save_cm, *killer, *nomovemsg;
 extern xchar dlevel, maxdlevel; /* dungeon level */
 
 extern long moves;
+extern long image_differ;	/* load address shift when restoring a game */
 
 extern int multi;
 

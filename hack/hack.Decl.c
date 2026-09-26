@@ -7,6 +7,7 @@ char plname[PL_NSIZ];		/* player name */
 char lock[PL_NSIZ + 4] = "1lock";	/* long enough for login name .99 */
 
 boolean in_mklev, restoring;
+long image_differ;	/* load address shift used when restoring a game */
 
 struct rm levl[COLNO][ROWNO];	/* level map */
 #ifndef QUEST

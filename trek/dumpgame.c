@@ -32,6 +32,9 @@
  */
 
 #include <fcntl.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 #include "trek.h"
 
@@ -44,6 +47,7 @@ struct dump {
 };
 
 static bool readdump(int);
+static void fix_dump_pointers(long);
 
 struct dump Dump_template[] = {
 	{ (char *)&Ship,	sizeof (Ship)	},
@@ -141,19 +145,69 @@ readdump(int fd1)
 	struct dump	*d;
 	int		i;
 	long			junk;
+	long			differ = 0;
 
 	fd = fd1;
 
 	for (d = Dump_template; d->area; d++) {
 		if (read(fd, &junk, sizeof junk) != (sizeof junk))
 			return (1);
-		if ((char *)junk != d->area)
+		/*
+		 * junk is the address the area had in the process that
+		 * dumped the game.  All areas live in the same executable
+		 * image, so the difference to their address here is the same
+		 * for each of them; comparing them also catches a dump that
+		 * does not fit this template.
+		 */
+		if (d == Dump_template)
+			differ = (char *)d->area - (char *)junk;
+		else if ((char *)d->area - (char *)junk != differ)
 			return (1);
 		i = d->count;
 		if (read(fd, d->area, i) != i)
 			return (1);
 	}
 
+	fix_dump_pointers(differ);
+
 	/* make quite certain we are at EOF */
 	return (read(fd, &junk, 1));
+}
+
+/*
+**  RELOCATE POINTERS INSIDE THE DUMPED AREAS
+**
+**	Ship.shipname, the Now.eventptr[] array and the copy of Now that
+**	is kept in Etc.snapshot (see events.c and warp.c) hold addresses
+**	from the process that dumped the game.  Shift them into this one.
+*/
+
+static void
+fix_dump_pointers(long differ)
+{
+	struct event	**epp;
+	struct event	*ep;
+	char		*snap;
+	size_t		off;
+	int		i;
+
+	if (Ship.shipname)
+		Ship.shipname =
+		    (const char *)((intptr_t)Ship.shipname + differ);
+
+	/* pointers into the Event[] array */
+	for (epp = Now.eventptr; epp < Now.eventptr + NEVENTS; epp++)
+		if (*epp)
+			*epp = (struct event *)((intptr_t)*epp + differ);
+
+	/* Etc.snapshot holds a copy of Quad, Event and Now */
+	snap = Etc.snapshot + sizeof(Quad) + sizeof(Event);
+	off = offsetof(struct Now_struct, eventptr);
+	for (i = 0; i < NEVENTS; i++) {
+		memcpy(&ep, snap + off + i * sizeof(ep), sizeof(ep));
+		if (ep == NULL)
+			continue;
+		ep = (struct event *)((intptr_t)ep + differ);
+		memcpy(snap + off + i * sizeof(ep), &ep, sizeof(ep));
+	}
 }

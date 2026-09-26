@@ -31,6 +31,17 @@ MANDIR=		${PREFIX}/man/man
 FILESDIR?=	${SHAREDIR}/games
 WARNS?=		6
 
+# These are old, mostly pre-ANSI C sources that rely on tentative definitions
+# (common symbols).  Compilers since gcc 10 / clang 11 default to -fno-common,
+# which turns those into "duplicate symbol" errors at link time.
+CFLAGS+=	-fcommon
+
+# The sources still produce a fair number of warnings with current compilers
+# (see TODO.md).  Keep building them instead of failing; this is what the
+# FreeBSD port does (it builds with WITHOUT_WERROR=yes).  Pass MK_WERROR=yes
+# on the command line to get -Werror back.
+MK_WERROR=	no
+
 # cribbed from DragonflyBSD build system
 
 NXCC?=		${CC}

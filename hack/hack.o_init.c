@@ -3,6 +3,8 @@
 /* $FreeBSD: src/games/hack/hack.o_init.c,v 1.6 1999/11/16 10:26:37 marcel Exp $ */
 /* $DragonFly: src/games/hack/hack.o_init.c,v 1.4 2006/08/21 19:45:32 pavalos Exp $ */
 
+#include <stdint.h>
+
 #include "def.objects.h"
 #include "hack.h"
 
@@ -142,6 +144,20 @@ restnames(int fd)
 
 	mread(fd, (char *)bases, sizeof(bases));
 	mread(fd, (char *)objects, sizeof(objects));
+	/*
+	 * oc_name and oc_descr point into this program's own data, and the
+	 * addresses differ between the process that saved the game and this
+	 * one (ASLR).  Relocate them by the image shift computed in
+	 * restmonchn().
+	 */
+	for (i = 0; i < SIZE(objects); i++) {
+		if (objects[i].oc_name)
+			objects[i].oc_name = (const char *)
+			    ((intptr_t)objects[i].oc_name + image_differ);
+		if (objects[i].oc_descr)
+			objects[i].oc_descr = (const char *)
+			    ((intptr_t)objects[i].oc_descr + image_differ);
+	}
 	for (i = 0; i < SIZE(objects); i++)
 		if (objects[i].oc_uname) {
 			mread(fd, (char *)&len, sizeof(len));

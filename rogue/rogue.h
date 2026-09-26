@@ -198,6 +198,9 @@
 
 #define MAX_ID_TITLE_LEN 64
 
+/* Longest damage string used in mon_tab[] is "1d14/1d4". */
+#define MAX_DAMAGE_LEN 16
+
 struct id {
 	short value;
 	char title[MAX_ID_TITLE_LEN];
@@ -228,7 +231,13 @@ struct id {
 
 struct obj {				/* comment is monster meaning */
 	unsigned long m_flags;	/* monster flags */
-	const char *damage;		/* damage it does */
+	/*
+	 * The damage string is held inline, not as a pointer: the whole
+	 * struct is written verbatim to the save file (see save.c), so a
+	 * pointer would point into the address space of the process that
+	 * saved the game and be useless (and fatal) after a restore.
+	 */
+	char damage[MAX_DAMAGE_LEN];	/* damage it does, e.g. "2d3" */
 	short quantity;			/* hit points to kill */
 	short ichar;			/* 'A' is for aquator */
 	short kill_exp;			/* exp for killing it */
