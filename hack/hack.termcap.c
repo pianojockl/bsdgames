@@ -2,7 +2,11 @@
 /* hack.termcap.c - version 1.0.3 */
 /* $FreeBSD: src/games/hack/hack.termcap.c,v 1.10 1999/11/16 10:26:38 marcel Exp $ */
 
+#include <curses.h>
+#include <err.h>
+#include <sysexits.h>
 #include <termcap.h>
+
 #include "hack.h"
 
 static char tbuf[512];
@@ -26,6 +30,11 @@ startup(void)
 	char *tbufptr, *pc;
 
 	tptr = alloc(1024);
+
+	if (initscr() == NULL)
+		err(EX_SOFTWARE, "initscr failed - out of memory?");
+	cbreak();
+	noecho();
 
 	tbufptr = tbuf;
 	if (!(term = getenv("TERM")))
